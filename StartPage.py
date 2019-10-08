@@ -49,9 +49,15 @@ class Ui_MainWindow(object):
         self.pushButton.clicked.connect(self.pushButtonClicked)
 
 
+
     def pushButtonClicked(self):
-        import WarehouseWizard
-        WarehouseWizard.runscript()
+
+        # import WarehouseWizard
+        # WarehouseWizard.runscript()
+
+        import os
+        os.system("python WarehouseWizard.py")
+        sys.exit(app.exec_())
 
 if __name__ == "__main__":
     import sys
@@ -62,4 +68,4 @@ if __name__ == "__main__":
     MainWindow.show()
 
     app.exec_()
-    # sys.exit(app.exec_())
+    sys.exit(app.exec_())
