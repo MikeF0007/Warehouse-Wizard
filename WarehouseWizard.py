@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'C:\Qt\Qt Python Projects\WarehouseWizard.ui'
-# 
+#
 # Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -26,7 +27,7 @@ class Ui_MainWindow(object):
         self.warehouseStatus.setGeometry(QtCore.QRect(50, 720, 561, 131))
         self.warehouseStatus.setMaximumSize(QtCore.QSize(700, 16777215))
         self.warehouseStatus.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-color: rgb(0, 0, 0);")
+                                           "border-color: rgb(0, 0, 0);")
         self.warehouseStatus.setObjectName("warehouseStatus")
         self.warehouseLabel = QtWidgets.QLabel(self.centralwidget)
         self.warehouseLabel.setGeometry(QtCore.QRect(280, 0, 211, 41))
@@ -268,12 +269,16 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.changesMade = False
         self.actionNew = QtWidgets.QAction(MainWindow)
         self.actionNew.setObjectName("actionNew")
+        self.actionNew.setShortcut("Ctrl+N")
         self.actionSave = QtWidgets.QAction(MainWindow)
         self.actionSave.setObjectName("actionSave")
+        self.actionSave.setShortcut("Ctrl+S")
         self.actionLoad = QtWidgets.QAction(MainWindow)
         self.actionLoad.setObjectName("actionLoad")
+        self.actionLoad.setShortcut("Ctrl+L")
         self.actionAdd_Item = QtWidgets.QAction(MainWindow)
         self.actionAdd_Item.setObjectName("actionAdd_Item")
         self.actionSearch_Item = QtWidgets.QAction(MainWindow)
@@ -282,6 +287,7 @@ class Ui_MainWindow(object):
         self.actionDelete_Item.setObjectName("actionDelete_Item")
         self.actionHow_to_use = QtWidgets.QAction(MainWindow)
         self.actionHow_to_use.setObjectName("actionHow_to_use")
+        self.actionHow_to_use.setShortcut("Ctrl+H")
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionLoad)
@@ -292,18 +298,17 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "WarehouseWizard"))
         self.warehouseStatus.setPlainText(_translate("MainWindow", "Warehouse Dimensions: \n"
-"Total Available Space:\n"
-"\n"
-"Storage \"Cell\" Dimensions:\n"
-"\n"
-"\n"
-"Activity Feed:\n"
-"(This Text will constantly change and output success/error messages"))
+                                                                   "Total Available Space:\n"
+                                                                   "\n"
+                                                                   "Storage \"Cell\" Dimensions:\n"
+                                                                   "\n"
+                                                                   "\n"
+                                                                   "Activity Feed:\n"
+                                                                   "(This Text will constantly change and output success/error messages"))
         self.warehouseLabel.setText(_translate("MainWindow", "Warehouse Layout"))
         self.itemListLabel.setText(_translate("MainWindow", "Items List: Warehouse"))
         self.a4Button.setText(_translate("MainWindow", "A4"))
@@ -358,66 +363,144 @@ class Ui_MainWindow(object):
         self.itemSearch.clicked.connect(self.itemSearchClicked)
         self.homeButton.clicked.connect(self.homeButtonClicked)
 
+        self.actionNew.triggered.connect(self.newFile)
+        self.actionLoad.triggered.connect(self.loadFile)
+        self.actionSave.triggered.connect(self.saveFile)
+        self.actionHow_to_use.triggered.connect(self.helpDisplay)
+
+    # Storage Space Functions
     def a1Clicked(self):
-            print("a1 clicked!")
+        self.itemList.setPlainText("A1")
+        self.itemListLabel.setText("Items List: A1")
+        print("a1 clicked!")
+
     def a2Clicked(self):
-            print("a2 clicked!")
+        self.itemListLabel.setText("Items List: A2")
+        print("a2 clicked!")
+
     def a3Clicked(self):
-            print("a3 clicked!")
+        self.itemListLabel.setText("Items List: A3")
+        print("a3 clicked!")
+
     def a4Clicked(self):
-            print("a4 clicked!")
+        self.itemListLabel.setText("Items List: A4")
+        print("a4 clicked!")
+
     def b1Clicked(self):
-            print("a1 clicked!")
+        self.itemListLabel.setText("Items List: B1")
+        print("a1 clicked!")
+
     def b2Clicked(self):
-            print("a2 clicked!")
+        self.itemListLabel.setText("Items List: B2")
+        print("a2 clicked!")
+
     def b3Clicked(self):
-            print("a3 clicked!")
+        self.itemListLabel.setText("Items List: B3")
+        print("a3 clicked!")
+
     def b4Clicked(self):
-            print("a4 clicked!")
+        self.itemListLabel.setText("Items List: B4")
+        print("a4 clicked!")
+
     def c1Clicked(self):
-            print("a1 clicked!")
+        self.itemListLabel.setText("Items List: C1")
+        print("a1 clicked!")
+
     def c2Clicked(self):
-            print("a2 clicked!")
+        self.itemListLabel.setText("Items List: C2")
+        print("a2 clicked!")
+
     def c3Clicked(self):
-            print("a3 clicked!")
+        self.itemListLabel.setText("Items List: C3")
+        print("a3 clicked!")
+
     def c4Clicked(self):
-            print("a4 clicked!")
+        self.itemListLabel.setText("Items List: C4")
+        print("a4 clicked!")
+
     def d1Clicked(self):
-            print("a1 clicked!")
+        self.itemListLabel.setText("Items List: D1")
+        print("a1 clicked!")
+
     def d2Clicked(self):
-            print("a2 clicked!")
+        self.itemListLabel.setText("Items List: D2")
+        print("a2 clicked!")
+
     def d3Clicked(self):
-            print("a3 clicked!")
+        self.itemListLabel.setText("Items List: D3")
+        print("a3 clicked!")
+
     def d4Clicked(self):
-            print("a4 clicked!")
+        self.itemListLabel.setText("Items List: D4")
+        print("a4 clicked!")
 
+    # Additional Button functions
     def addItemClicked(self):
-            print("add item clicked!")
+        self.changesMade = True  # unless we cancel item add
+        print("add item clicked!")
+
     def removeItemClicked(self):
-            print("remove item clicked!")
+        self.changesMade = True  # unless we cancel removing an item
+        print("remove item clicked!")
+
     def itemSearchClicked(self):
-            print("itemSearch clicked!")
+        print("itemSearch clicked!")
+
     def homeButtonClicked(self):
-            print("home clicked!")
+        self.itemListLabel.setText("Items List: Warehouse")
+        print("home clicked!")
+
+    # Menu Bar Action functions
+    def newFile(self):
+        if self.changesMade:
+            x = QtWidgets.QMessageBox()
+            message = QtWidgets.QMessageBox.question(x, "Save", "Would you like to save changes before creating new file?",
+                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Yes)
+            if message == QtWidgets.QMessageBox.Yes:
+                    print("execute save procedure then newFile procedure")
+                    #possible set changesMade to false unless we already handle that in the newFile procedure
+                    self.changesMade = False
+            elif message == QtWidgets.QMessageBox.No:
+                    print("User hit No LOL")
+                    self.changesMade = False
+                    # create a new warehouse
+            else:
+                    print("User hit cancel LOL")
+                    # do nothing
 
 
+    def loadFile(self):
+        # if self.changesMade:
+        #         # prompt user to save
+        # else:
+        #         self.changesMade = False
+        #         # load existing warehouse
+        print("load file clicked")
 
-# if __name__ == "__main__":
-#     import sys
-#     app = QtWidgets.QApplication(sys.argv)
-#     MainWindow = QtWidgets.QMainWindow()
-#     ui = Ui_MainWindow()
-#     ui.setupUi(MainWindow)
-#     MainWindow.show()
-#     sys.exit(app.exec_())
+    def saveFile(self):
+        # #once we save
+        # self.changesMade = False
+        print("save file clicked")
 
-def runscript():
+    def helpDisplay(self):
+        x = QtWidgets.QMessageBox()
+        QtWidgets.QMessageBox.information(x, "How to Use",
+                                          "Warehouse Wizard divides the warehouse dimensions specified by the user "
+                                          "into 16 storage spaces of equal size, accounting for aisles and walkways."
+                                          "                                                                         "
+                                          "                                                                         "
+                                          "The color of each storage space indicates the level of remaining space")
+
+    def updateItemListDisplay(self):  # storage space and index of change as parameters?
+        print("display called")
+
+
+if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-
-    # app.exec_()
     sys.exit(app.exec_())
