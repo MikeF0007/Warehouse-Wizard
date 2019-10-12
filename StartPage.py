@@ -8,11 +8,12 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import sys
+import os
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
+        MainWindow.setObjectName("Welcome to WarehouseWizard!")
         MainWindow.resize(1075, 567)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -42,25 +43,24 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("Welcome to WarehouseWizard!", "Welcome to WarehouseWizard!"))
         self.pushButton.setText(_translate("MainWindow", "New WareHouse"))
         self.pushButton_2.setText(_translate("MainWindow", "Load"))
 
-        self.pushButton.clicked.connect(self.pushButtonClicked)
+        self.pushButton.clicked.connect(self.newButtonPushed)
+        self.pushButton_2.clicked.connect(self.loadButtonPushed)
 
+    def loadButtonPushed(self):
+        MainWindow.hide()
+        os.system("python WarehouseWizard.py load")
+        MainWindow.show()
 
-
-    def pushButtonClicked(self):
-
-        # import WarehouseWizard
-        # WarehouseWizard.runscript()
-
-        import os
+    def newButtonPushed(self):
+        MainWindow.hide()
         os.system("python WarehouseWizard.py")
-        sys.exit(app.exec_())
+        MainWindow.show()
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()

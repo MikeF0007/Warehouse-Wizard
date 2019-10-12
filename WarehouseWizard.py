@@ -8,7 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import sys
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -367,6 +367,7 @@ class Ui_MainWindow(object):
         self.actionLoad.triggered.connect(self.loadFile)
         self.actionSave.triggered.connect(self.saveFile)
         self.actionHow_to_use.triggered.connect(self.helpDisplay)
+        self.loadOnStartup()
 
     # Storage Space Functions
     def a1Clicked(self):
@@ -494,10 +495,12 @@ class Ui_MainWindow(object):
     def updateItemListDisplay(self):  # storage space and index of change as parameters?
         print("display called")
 
+    def loadOnStartup(self):
+        if len(sys.argv) > 1:
+            print("hello")
+
 
 if __name__ == "__main__":
-    import sys
-
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
