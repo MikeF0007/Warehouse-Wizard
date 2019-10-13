@@ -8,6 +8,10 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
+import os
+from pickle import load
+from ww_class_structure import Warehouse
 
 
 class Ui_MainWindow(object):
@@ -368,6 +372,9 @@ class Ui_MainWindow(object):
         self.actionSave.triggered.connect(self.saveFile)
         self.actionHow_to_use.triggered.connect(self.helpDisplay)
 
+        self.warehouse = Warehouse()
+        self.loadOnStartup()
+
     # Storage Space Functions
     def a1Clicked(self):
         self.itemList.setPlainText("A1")
@@ -436,8 +443,16 @@ class Ui_MainWindow(object):
 
     # Additional Button functions
     def addItemClicked(self):
-        self.changesMade = True  # unless we cancel item add
-        print("add item clicked!")
+        os.system("python WWitemEntry.py")
+        if os.stat("temp.bin").st_size != 0:
+            with open('temp.bin', 'rb') as f:
+                itemSpecs = load(f)
+                # self.warehouse.addItem()
+                f.flush()
+                f.close()
+        else:
+            print("user canceled addItem")
+
 
     def removeItemClicked(self):
         self.changesMade = True  # unless we cancel removing an item
@@ -469,12 +484,13 @@ class Ui_MainWindow(object):
                     # do nothing
 
 
-    def loadFile(self):
+    def loadFile(self, filename):
         # if self.changesMade:
         #         # prompt user to save
         # else:
         #         self.changesMade = False
         #         # load existing warehouse
+        print(filename)
         print("load file clicked")
 
     def saveFile(self):
@@ -493,10 +509,13 @@ class Ui_MainWindow(object):
 
     def updateItemListDisplay(self):  # storage space and index of change as parameters?
         print("display called")
+    def loadOnStartup(self):
+        if len(sys.argv) > 1:
+            self.loadFile(sys.argv[1])
+
 
 
 if __name__ == "__main__":
-    import sys
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
