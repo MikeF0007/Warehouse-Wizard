@@ -130,7 +130,14 @@ class Warehouse:
 	Parameter: id = integer of unique ID number
 	-----------------------------------------------------------------------------------------------------------------'''
 	def searchItem(self, uniqueID):
-
+		i = j = 0
+		for row in self.spaceMatrix:
+			for space in row:
+				if uniqueID in space.itemList:
+					return [i, j]
+				j = j + 1
+			i = i + 1
+		return None
 
 	'''-----------------------------------------------------------------------------------------------------------------
 	This function sequentially looks through the available storage space and returns a pair of coordinates
