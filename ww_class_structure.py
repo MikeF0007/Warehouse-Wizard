@@ -22,8 +22,7 @@ class Item:
 
 
 class StorageSpace:
-
-	def __init__(self, remainingArea=storageCap, itemList={}, category=None, spaceLeft=True):
+	def __init__(self, remainingArea, itemList={}, category=None, spaceLeft=True):
 		# double value that holds the remaining area of available space
 		self.remainingArea = remainingArea
 		# string variable that can optionally be used to label the type of items stored there
@@ -37,17 +36,14 @@ class StorageSpace:
 
 	'''-----------------------------------------------------------------------------------------------------------------
 	This function will place the item in the storage space by adding an entry to the dictionary and then subtracting its 
-	area from the storage space. Return False if failure occurs.
+	area from the storage space.
 	Parameters: i = Item to be stored and inserted in dictionary
 	-----------------------------------------------------------------------------------------------------------------'''
 	def storeItem(self, newItem):
-		if remainingArea - (newItem.dimensions[0] * newItem.dimensions[1]) >= 0:
-      self.itemList[newItem.itemID] = newItem
-      self.remainingArea = self.remainingArea - (newItem.dimensions[0] * newItem.dimensions[1])
-      if remainingArea == 0:
-        self.spaceLeft = False
-    else:
-      return False
+		self.itemList[newItem.itemID] = newItem
+		self.remainingArea = self.remainingArea - (newItem.dimensions[0] * newItem.dimensions[1])
+		if self.remainingArea == 0:
+			self.spaceLeft = False
 
 	'''-----------------------------------------------------------------------------------------------------------------
 	This removes the item specified by the unique id argument from the storage space dictionary and restores the area
@@ -55,13 +51,11 @@ class StorageSpace:
 	If item doesn't exist, then return False.
 	Parameters: id = unique ID of the item to be removed
 	-----------------------------------------------------------------------------------------------------------------'''
-  def removeItem(self, uniqueID):	
-    if uniqueID is in self.itemList:
-      self.remainingArea = self.remainingArea + (self.itemList[uniqueID].dimensions[0] * self.itemList[uniqueID].dimensions[1])
-      if self.spaceLeft = False:
-        self.spaceLeft = True
-    else:
-      return False
+	def removeItem(self, uniqueID):
+		self.itemList.pop(uniqueID)
+		self.remainingArea = self.remainingArea + (self.itemList[uniqueID].dimensions[0] * self.itemList[uniqueID].dimensions[1])
+		if not self.spaceLeft:
+			self.spaceLeft = True
 
 	'''-----------------------------------------------------------------------------------------------------------------
 	This returns the item specified by the unique id argument from the storage space dictionary. If item doesn't exist,
@@ -69,24 +63,19 @@ class StorageSpace:
 	Parameters: id = unique ID of the item to be retrieved
 	-----------------------------------------------------------------------------------------------------------------'''
 	def getItem(self, uniqueID):
-	if uniqueID is in self.itemList:
-      return self.itemList[uniqueID]
-  else:
-    return None
+		if uniqueID in self.itemList:
+			return self.itemList[uniqueID]
+		else:
+			return None
 
 
 class Warehouse:
 
-	def __init__(
-			self, manifest={}, items=0, storageSpaces=np.empty((4, 4), 
-      dtype=StorageSpace), numSpaces=16, dimensions=(250, 250), id=0
-		):
+	def __init__(self, manifest={}, items=0, storageSpaces=None, numSpaces=16, dimensions=(250, 250), id=0):
 		# dictionary where keys are item names (string) and values are dictionaries mapping storage location to # of occurrences
 		self.itemManifest = manifest
-    # integer number of items in the manifest for ease of use
-    self.itemCount = items
-		# matrix of StorageSpace objects (list of storage space lists)
-		self.spaceMatrix = storageSpaces
+		# integer number of items in the manifest for ease of use
+		self.itemCount = items
 		# integer number of storage spaces in matrix that have a remaining area value > 0
 		self.numOpenSpaces = numSpaces
 		# pair of doubles that gives the height and width of the warehouse. Dictates the area of storage spaces
@@ -95,6 +84,11 @@ class Warehouse:
 		self.nextUniqueID = id
 		# pair of doubles that gives the maximum dimensions for every storage (all size)
 		self.storageCap = (dimensions[0]/5) * (dimensions[1]/5)
+		# matrix of StorageSpace objects (list of storage space lists)
+		if storageSpaces is None:
+			self.spaceMatrix = [[StorageSpace(self.storageCap)]*4]*4
+		else:
+			self.spaceMatrix = storageSpaces
 
 	# ----------------------------------------------------Methods----------------------------------------------------- #
 
@@ -108,15 +102,14 @@ class Warehouse:
 	-----------------------------------------------------------------------------------------------------------------'''
 	def addItem(self, dimensions, name, description="", category=None):
 		newItem = Item(itemID=self.nextUniqueID, dimensions=dimensions, name=name, description=description)
-		availableSpot = self.findAvailableSpot(category)
+		availableSpot = self.findAvailableSpot(newItem.dimensions, category)
 		if availableSpot is None:
-			return False
+			pass
+			# ERROR
 		else:
 			self.itemManifest[newItem.name][availableSpot] += 1
-			i = availableSpot[0]
-			j = availableSpot[1]
-			self.spaceMatrix.item((i, j)).storeItem(newItem)
-			return True
+			self.spaceMatrix.item((availableSpot[0], availableSpot[1])).storeItem(newItem)
+			# SUCCESS
 
 	'''-----------------------------------------------------------------------------------------------------------------
 	This function will remove an item from the warehouse if it exists (search using warehouse's dictionary. The 
@@ -126,10 +119,10 @@ class Warehouse:
 	Parameter: id = integer of unique ID number
 	-----------------------------------------------------------------------------------------------------------------'''
 	def removeItem(self, uniqueID):
-    itemLocation = self.searchItem(uniqueID)
-    if (itemLocation is not None):
-      self.spaceMatrix.item((itemLocation[0], itemLocation[1]).itemList.pop(uniqueID))
-
+		itemLocation = self.searchItem(uniqueID)
+		if itemLocation is not None:
+			self.spaceMatrix.item((itemLocation[0], itemLocation[1])).removeItem(uniqueID)
+		# ERROR
 
 	'''-----------------------------------------------------------------------------------------------------------------
 	This function will search for and return the coordinates to the storage location containing the item by using the
@@ -137,14 +130,7 @@ class Warehouse:
 	Parameter: id = integer of unique ID number
 	-----------------------------------------------------------------------------------------------------------------'''
 	def searchItem(self, uniqueID):
-		i = j = 0
-    for row in self.spaceMatrix:
-      for space in row:
-        if uniqueID is in space.itemList:
-          return [i, j]
-        j = j + 1
-      i = i + 1
-    return None
+
 
 	'''-----------------------------------------------------------------------------------------------------------------
 	This function sequentially looks through the available storage space and returns a pair of coordinates
@@ -155,26 +141,26 @@ class Warehouse:
 	are labeled, None will be returned.
 	Parameter: location = pair that contains the coordinates in the space matrix. Can be type None
 	-----------------------------------------------------------------------------------------------------------------'''
-	def findAvailableSpot(self, category=None):
+	def findAvailableSpot(self, dimensions, category=None):
 		if category is not None:
 			i = j = 0
 			for row in self.spaceMatrix:
 				for space in row:
-					if category == space.category and space.spaceLeft:
+					if category == space.category and space.spaceLeft \
+						and (self.remainingArea - (dimensions[0] * dimensions[1])) >= 0:
 						return [i, j]
 					j = j + 1
 				i = i + 1
 
-    #We weren't able to find a storage space designated for that category or no category was specified
-    i = j = 0
-    for row in self.spaceMatrix:
-      for space in row:
-        if space.category is None and space.spaceLeft:
-          return [i, j]
-        j = j + 1
-      i = i + 1
-    return None
-
+		# We weren't able to find a storage space designated for that category or no category was specified
+		i = j = 0
+		for row in self.spaceMatrix:
+			for space in row:
+				if space.category is None and space.spaceLeft:
+					return [i, j]
+				j = j + 1
+			i = i + 1
+		return None
 
 
 # --------------------------------------------------Global Functions-------------------------------------------------- #
@@ -184,8 +170,7 @@ Prompt the user in UI to get the item information and then invoke/pass this info
 of the item's new storage location or notification of failure will be output to the bottom window.
 ---------------------------------------------------------------------------------------------------------------------'''
 def addItem():
-	#Launch UI prompt to add item
-  pass
+	pass
 
 
 '''---------------------------------------------------------------------------------------------------------------------
