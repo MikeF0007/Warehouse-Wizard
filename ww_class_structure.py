@@ -122,6 +122,9 @@ class Warehouse:
 		itemLocation = self.searchItem(uniqueID)
 		if itemLocation is not None:
 			self.spaceMatrix.item((itemLocation[0], itemLocation[1])).removeItem(uniqueID)
+			return True
+		else:
+			return False
 		# ERROR
 
 	'''-----------------------------------------------------------------------------------------------------------------
