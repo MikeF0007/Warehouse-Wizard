@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="80674229-d9b6-42ff-a1e2-28455f18b5f4" name="Default" comment="" />
+    <list default="true" id="80674229-d9b6-42ff-a1e2-28455f18b5f4" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/WarehouseWizard.py" beforeDir="false" afterPath="$PROJECT_DIR$/WarehouseWizard.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -9,35 +11,25 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file leaf-file-name="Help_Window.py" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/Help_Window.py">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="244">
-                    <caret line="62" column="89" lean-forward="true" selection-start-line="62" selection-start-column="89" selection-end-line="62" selection-end-column="89" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="WarehouseWizard.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="WarehouseWizard.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WarehouseWizard.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2267">
-              <caret line="459" column="42" selection-start-line="459" selection-start-column="42" selection-end-line="459" selection-end-column="42" />
+            <state relative-caret-position="116">
+              <caret line="514" column="42" lean-forward="true" selection-start-line="514" selection-start-column="42" selection-end-line="514" selection-end-column="42" />
               <folding>
                 <element signature="e#230#272#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Help_Window.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Help_Window.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="244">
+              <caret line="62" column="89" lean-forward="true" selection-start-line="62" selection-start-column="89" selection-end-line="62" selection-end-column="89" />
             </state>
           </provider>
         </entry>
@@ -95,14 +87,15 @@
       <list>
         <option value="$PROJECT_DIR$/WWMenu.py" />
         <option value="$PROJECT_DIR$/Help_Window.py" />
+        <option value="$PROJECT_DIR$/WarehouseWizard.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-92" />
-    <option name="y" value="-14" />
+    <option name="x" value="-1920" />
+    <option name="y" value="-22" />
     <option name="width" value="1938" />
-    <option name="height" value="1048" />
+    <option name="height" value="931" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -138,7 +131,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Help_Window">
+  <component name="RunManager" selected="Python.WarehouseWizard">
     <configuration name="Help_Window" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Warehouse-Wizard" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -238,8 +231,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Help_Window" />
         <item itemvalue="Python.WarehouseWizard" />
+        <item itemvalue="Python.Help_Window" />
         <item itemvalue="Python.WWdimensionEntry" />
         <item itemvalue="Python.WWitemEntry" />
         <item itemvalue="Python.WWMenu" />
@@ -269,15 +262,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
+    <frame x="-1928" y="-8" width="1936" height="1176" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12888302" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10273973" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50033045" side_tool="true" weight="0.32905984" />
       <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.49966952" weight="0.32905984" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.1951567" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.13198459" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32851636" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -411,8 +403,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/WarehouseWizard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2267">
-          <caret line="459" column="42" selection-start-line="459" selection-start-column="42" selection-end-line="459" selection-end-column="42" />
+        <state relative-caret-position="116">
+          <caret line="514" column="42" lean-forward="true" selection-start-line="514" selection-start-column="42" selection-end-line="514" selection-end-column="42" />
           <folding>
             <element signature="e#230#272#0" expanded="true" />
           </folding>

@@ -505,13 +505,14 @@ class Ui_MainWindow(object):
         print("save file clicked")
 
     def helpDisplay(self):
-        x = QtWidgets.QMessageBox()
-        QtWidgets.QMessageBox.information(x, "How to Use",
-                                          "Warehouse Wizard divides the warehouse dimensions specified by the user "
-                                          "into 16 storage spaces of equal size, accounting for aisles and walkways."
-                                          "                                                                         "
-                                          "                                                                         "
-                                          "The color of each storage space indicates the level of remaining space")
+        # x = QtWidgets.QMessageBox()
+        # QtWidgets.QMessageBox.information(x, "How to Use",
+        #                                   "Warehouse Wizard divides the warehouse dimensions specified by the user "
+        #                                   "into 16 storage spaces of equal size, accounting for aisles and walkways."
+        #                                   "                                                                         "
+        #                                   "                                                                         "
+        #                                   "The color of each storage space indicates the level of remaining space")
+        os.system("python Help_Window.py")
 
     def updateItemListDisplay(self):  # storage space and index of change as parameters?
         print("display called")
