@@ -1,12 +1,17 @@
-WhareHouseLayout:
+WareHouseLayout:
 
+The Layout that represents the entire warehouse. The warehouse contains sections which are Cateogries which cotains items in an ItemList.
 
 Activity Feed:
+
+It is a bottom utitlity that records the sucesses and errors during an execution of an action when using the program.
 
 
 ItemList:
 
+A list of Items. Each ItemList is in a green section called a Category.
 
 Category:
 
-
+Categories are those green sections in the Warehouse Layout. Each categories have an Itemlist. Each differ in what they contain. 
+Due to that fact, each category has different items than the other.
