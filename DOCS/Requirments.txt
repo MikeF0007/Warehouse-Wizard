@@ -1,0 +1,7 @@
+The system shall keep track of items in warehouse
+
+The system shall check for available spaces
+        if spaces available put item
+        if not, tell user not possible
+
+
