@@ -278,18 +278,3 @@ category of the selected space
 ---------------------------------------------------------------------------------------------------------------------'''
 def setCategory():
 	pass
-
-
-'''---------------------------------------------------------------------------------------------------------------------
-This function will get the encoded integer index for the given row label (A, B, C, D)
-Parameters: rowLabel = the character label for the row of a storage location
----------------------------------------------------------------------------------------------------------------------'''
-def getEncoding(rowLabel):
-	if rowLabel == 'A':
-		return 0
-	elif rowLabel == 'B':
-		return 1
-	elif rowLabel == 'C':
-		return 2
-	else:
-		return 3
