@@ -670,7 +670,7 @@ class Ui_MainWindow(object):
                     status += "Total Available Space: \n\n"
                     status += "Storage \"Cell\" Dimensions:\n\n\n"
                     status += "Activity Feed:\n"
-                    status += str(itemName) + " successfully stored at location " + str(storedAt)
+                    status += str(itemName) + " successfully stored at location " + str(getEncoding(storedAt[0])) + str(storedAt[1] + 1)
                     self.updateStatusWindow(status)
                 else:
                     status = "Warehouse Dimensions: \n"
@@ -747,6 +747,22 @@ class Ui_MainWindow(object):
             return True
         else:
             return False
+
+
+'''---------------------------------------------------------------------------------------------------------------------
+This function will get the encoded integer index for the given row label (A, B, C, D)
+Parameters: rowLabel = the character label for the row of a storage location
+---------------------------------------------------------------------------------------------------------------------'''
+def getEncoding(rowNumber):
+    if rowNumber == 0:
+        return 'A'
+    elif rowNumber == 1:
+        return 'B'
+    elif rowNumber == 2:
+        return 'C'
+    else:
+        return 'D'
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
