@@ -10,11 +10,13 @@ class database:
 
     def save(self):
         print("Writing to Database....")
+
         with open('db.json', 'w+') as json_file:
             json.dump(self.data, json_file, indent=4, sort_keys=True)
 
     def add_item(self, name, w, h, description, category, warehouse_id, storedAt):
-        
+        print(f"Adding {name} into Warehouse {warehouse_id} stored at {storedAt}.")
+
         self.data["warehouse"][warehouse_id-1]["items"].append({"id": self.nextUniqueID, "name": name, 
                                                                 "width": w, "height": h, "description": description,
                                                                 "category": category, "storedAt": storedAt, "itemCount": 0})
@@ -25,16 +27,17 @@ class database:
 
         self.nextUniqueID = len(self.data["warehouse"][warehouse_id-1]["items"])
 
-    def add_warehouse(self, h, w, l):
+    def add_warehouse(self, h, w):
         print("Creating Warehouse....")
 
         warehouse_id = len(self.data["warehouse"]) + 1
         alpha = ['A', 'B', 'C', 'D']
-        storageCap = ((w/5)*(h/5)*(l/5))
-        cubicVolume = w*h*l
+        
+        storageCap = ((w/5)*(h/5))
+        area = w*h
 
-        self.data["warehouse"].append({"id": warehouse_id, "height": h, "length": l, "width": w, 
-                                        "cubicVolume": cubicVolume, "items": [], "storageLocation": {}, "storageCap": storageCap})
+        self.data["warehouse"].append({"id": warehouse_id, "height": h, "width": w, 
+                                        "areaSize": area, "items": [], "storageLocation": {}, "storageCap": storageCap})
         
         for i in range(0,4):
             for j in range(1,5):
@@ -87,21 +90,21 @@ class database:
     # def reindex_items(self, warehouse_num):
     #     for i in range(len(self.data["warehouse"][warehouse_num]["items"])):
     #         self.data["warehouse"][warehouse_num]["items"]["id"] = i + 1
-    #     self.dict_to_json("db")
 
-    def reindex_warehouse(self):
-        for i in range(len(self.data["warehouse"])):
-                self.data["warehouse"][i]["id"] = i + 1
-        # self.dict_to_json("db")
+    # def reindex_warehouse(self):
+    #     for i in range(len(self.data["warehouse"])):
+    #             self.data["warehouse"][i]["id"] = i + 1
 
 db1 = database()
 
-db1.add_warehouse(500,500,500)
+db1.add_warehouse(500,500)
 
 db1.save()
 
 db1.add_item("toaster",50,50,"Tacos meant machine","electronic",1,"A1")
 
 item = db1.search_item_by_name(1, "toaster")
+
+print(type(item))
 
 db1.save()
