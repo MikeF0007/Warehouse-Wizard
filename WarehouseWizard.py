@@ -345,14 +345,11 @@ class Ui_MainWindow(object):
 
             MainWindow.setWindowTitle(_translate("MainWindow", "WarehouseWizard: " + filename))
 
-            self.warehouseStatusWindow.setPlainText(_translate("MainWindow", "Warehouse Dimensions: \n"
-                                                                       "Total Available Space:\n"
-                                                                       "\n"
-                                                                       "Storage \"Cell\" Dimensions:\n"
-                                                                       "\n"
-                                                                       "\n"
-                                                                       "Activity Feed:\n"
-                                                                       "This text will display the success or failure of user activities"))
+            self.warehouseStatusWindow.setPlainText(_translate("MainWindow",
+                                                               "Warehouse Dimensions: " + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + " units (" + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units)\n\n"
+                                                                "---------------------------------------------------------------------\n\n"
+                                                               "Activity Feed:\n"
+                                                               "This text will display the success or failure of user activities"))
             self.itemListWindow.setPlainText(_translate("MainWindow", "(Information about items contained within the warehouse will be displayed here)"))
             self.warehouseLabel.setText(_translate("MainWindow", "Warehouse Layout"))
             self.itemListLabel.setText(_translate("MainWindow", "Items List: Warehouse"))
@@ -398,14 +395,11 @@ class Ui_MainWindow(object):
                 # dimensions = [int(warehouseSpecs[1]), int(warehouseSpecs[2])]
                 self.warehouse = Warehouse(filename=warehouseName) # dimensions=dimensions)
                 MainWindow.setWindowTitle(_translate("MainWindow", "WarehouseWizard: " + warehouseName))
-                self.warehouseStatusWindow.setPlainText(_translate("MainWindow", "Warehouse Dimensions: \n"
-                                                                           "Total Available Space: \n"
-                                                                           "\n"
-                                                                           "Storage \"Cell\" Dimensions:\n"
-                                                                           "\n"
-                                                                           "\n"
-                                                                           "Activity Feed:\n"
-                                                                           "This text will display the success or failure of user activities"))
+                self.warehouseStatusWindow.setPlainText(_translate("MainWindow",
+                                                                   "Warehouse Dimensions: " + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + " units (" + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units)\n\n"
+                                                                   "---------------------------------------------------------------------\n\n"
+                                                                   "Activity Feed:\n"
+                                                                   "This text will display the success or failure of user activities"))
                 f.flush()
                 f.close()
 
@@ -630,8 +624,20 @@ class Ui_MainWindow(object):
                 itemCategory = itemSpecs[4]
                 if itemCategory == "":
                     itemCategory = None
+
+                # Attempt to store the item in the warehouse
                 storedAt = self.warehouse.addItem(dimensions, itemName, itemDescription, itemCategory)
-                if storedAt is not None:
+
+                if storedAt is None:
+                    # Output to the status window that there was a failure to add the item
+                    status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + " units (" + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units)\n\n"
+                    status += "---------------------------------------------------------------------\n\n"
+                    status += "Activity Feed:\n"
+                    status += "Item failed to be stored. There is not enough space in the warehouse for that item and/or the given category location could not be found."
+                    self.updateStatusWindow(status)
+
+                else:
+                    # Output to the item window the contents of the storage space in which the item was added to
                     if storedAt[0] == 0 and storedAt[1] == 0:
                         self.a1Clicked()
                     elif storedAt[0] == 0 and storedAt[1] == 1:
@@ -664,33 +670,86 @@ class Ui_MainWindow(object):
                         self.d3Clicked()
                     else:
                         self.d4Clicked()
-                    # output to the bottom window indication of add success at the given storage space location
+
+                    # Output to the bottom window indication of add success at the given storage space location
                     self.changesMade = True
-                    status = "Warehouse Dimensions: \n"
-                    status += "Total Available Space: \n\n"
-                    status += "Storage \"Cell\" Dimensions:\n\n\n"
+                    status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + " units (" + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units)\n"
+                    status += "Remaining Space at " + getEncoding(storedAt[0]) + str(storedAt[1] + 1) + ": " + str(int(self.warehouse.spaceMatrix[storedAt[0]][storedAt[1]].remainingArea)) + " square units\n\n"
+                    status += "---------------------------------------------------------------------\n\n"
                     status += "Activity Feed:\n"
-                    status += str(itemName) + " successfully stored at location " + str(getEncoding(storedAt[0])) + str(storedAt[1] + 1)
+                    status += "\'" + str(itemName) + "\' successfully stored at location " + str(getEncoding(storedAt[0])) + str(storedAt[1] + 1) + "."
                     self.updateStatusWindow(status)
-                else:
-                    status = "Warehouse Dimensions: \n"
-                    status += "Total Available Space: \n\n"
-                    status += "Storage \"Cell\" Dimensions:\n\n\n"
-                    status += "Activity Feed:\n"
-                    status += "Item failed to be stored. There is not enough space in the warehouse for that item and/or the given category location could not be found"
-                    self.updateStatusWindow(status)
+
                 f.flush()
                 f.close()
         else:
             print("user canceled addItem")
 
     def removeItemClicked(self):
+        # If there are no items in the warehouse, then we can't remove anything so terminate the function
+        if self.warehouse.itemCount == 0:
+            status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + " units (" + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units)\n\n"
+            status += "---------------------------------------------------------------------\n\n"
+            status += "Activity Feed:\n"
+            status += "There are currently no items in the warehouse."
+            self.updateStatusWindow(status)
+            return
+
+        # Otherwise, there are items in the warehouse. Proceed with the function.
         x = QtWidgets.QInputDialog()
         message = QtWidgets.QInputDialog.getText(x, "Remove Item", "Enter the ID of the item you'd like to remove.")
-        self.warehouse.removeItem(message)
-        self.changesMade = True  # unless we cancel removing an item
+        itemInfo = self.warehouse.removeItem(int(message[0]))
+        if itemInfo is None:
+            status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + " units (" + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units)\n\n"
+            status += "---------------------------------------------------------------------\n\n"
+            status += "Activity Feed:\n"
+            status += "An item with the ID " + message[0] + " doesn't exist. Please try another ID."
+            self.updateStatusWindow(status)
+            return
+        else:
+            # Output the contents of the storage space in which the item was just removed from
+            if itemInfo[1][0] == 0 and itemInfo[1][1] == 0:
+                self.a1Clicked()
+            elif itemInfo[1][0] == 0 and itemInfo[1][1] == 1:
+                self.a2Clicked()
+            elif itemInfo[1][0] == 0 and itemInfo[1][1] == 2:
+                self.a3Clicked()
+            elif itemInfo[1][0] == 0 and itemInfo[1][1] == 3:
+                self.a4Clicked()
+            elif itemInfo[1][0] == 1 and itemInfo[1][1] == 0:
+                self.b1Clicked()
+            elif itemInfo[1][0] == 1 and itemInfo[1][1] == 1:
+                self.b2Clicked()
+            elif itemInfo[1][0] == 1 and itemInfo[1][1] == 2:
+                self.b3Clicked()
+            elif itemInfo[1][0] == 1 and itemInfo[1][1] == 3:
+                self.b4Clicked()
+            elif itemInfo[1][0] == 2 and itemInfo[1][1] == 0:
+                self.c1Clicked()
+            elif itemInfo[1][0] == 2 and itemInfo[1][1] == 1:
+                self.c2Clicked()
+            elif itemInfo[1][0] == 2 and itemInfo[1][1] == 2:
+                self.c3Clicked()
+            elif itemInfo[1][0] == 2 and itemInfo[1][1] == 3:
+                self.c4Clicked()
+            elif itemInfo[1][0] == 3 and itemInfo[1][1] == 0:
+                self.d1Clicked()
+            elif itemInfo[1][0] == 3 and itemInfo[1][1] == 1:
+                self.d2Clicked()
+            elif itemInfo[1][0] == 3 and itemInfo[1][1] == 2:
+                self.d3Clicked()
+            else:
+                self.d4Clicked()
 
-        print("remove item clicked!")
+            # Output information regarding the successful removal of the item in the status window
+            status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + " units (" + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units)\n"
+            status += "Remaining Space at " + getEncoding(itemInfo[1][0]) + str(itemInfo[1][1] + 1) + ": " + str(int(self.warehouse.spaceMatrix[itemInfo[1][0]][itemInfo[1][1]].remainingArea)) + " square units\n\n"
+            status += "---------------------------------------------------------------------\n\n"
+            status += "Activity Feed:\n"
+            status += itemInfo[0] + " at location " + str(getEncoding(itemInfo[1][0])) + str(itemInfo[1][1] + 1) + " has been removed."
+            self.updateStatusWindow(status)
+
+
 
     def itemSearchClicked(self):
         print("itemSearch clicked!")
@@ -726,6 +785,20 @@ class Ui_MainWindow(object):
         # else:
         #         self.changesMade = False
         #         # load existing warehouse
+        '''
+        warehouseList = database("allWarehouses")
+        prompt user of warehouse filenames
+        filename = get json filename from UI
+        db = database(filename) for smaller individual json files
+
+        in Load UI
+        warehouses = db.warehouseList
+
+
+
+        '''
+
+
         print(filename)
         print("load file clicked")
 
