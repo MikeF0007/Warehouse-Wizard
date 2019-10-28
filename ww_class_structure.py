@@ -1,7 +1,5 @@
 import numpy as np
-from ww_db import database
 
-db = database()
 
 class Item:
 	def __init__(self, itemID, dimensions, name, description, storedAt):
@@ -49,8 +47,8 @@ class StorageSpace:
 	Parameters: id = unique ID of the item to be removed
 	-----------------------------------------------------------------------------------------------------------------'''
 	def removeItem(self, uniqueID):
+		self.remainingArea += (self.itemList[uniqueID].dimensions[0] * self.itemList[uniqueID].dimensions[1])
 		self.itemList.pop(uniqueID)
-		self.remainingArea = self.remainingArea + (self.itemList[uniqueID].dimensions[0] * self.itemList[uniqueID].dimensions[1])
 		if not self.spaceLeft:
 			self.spaceLeft = True
 
@@ -84,9 +82,7 @@ class Warehouse:
 		self.filename = filename
 		# pair of doubles that gives the height and width of the warehouse. Dictates the area of storage spaces
 		self.dimensions = dimensions
-		# dictionary mapping item names (string) to a dictionary mapping storage location to # of occurrences
-		self.itemManifest = manifest
-		# integer number of items in the manifest for ease of use
+		# integer number of items in the warehouse for ease of use
 		self.itemCount = items
 		# integer number of storage spaces in matrix that have a remaining area value > 0
 		self.numOpenSpaces = numSpaces
@@ -118,36 +114,35 @@ class Warehouse:
 			newItem = Item(itemID=self.nextUniqueID, dimensions=dimensions, name=name, description=description, storedAt=availableSpot)
 			self.spaceMatrix[availableSpot[0]][availableSpot[1]].storeItem(newItem)
 			self.nextUniqueID += 1
+			self.itemCount += 1
 			return availableSpot
 		else:
 			return None
 
 	'''-----------------------------------------------------------------------------------------------------------------
-	This function will remove an item from the warehouse if it exists (search using warehouse's dictionary. The 
+	This function will remove an item from the warehouse if it exists (using the warehouse's search function). The 
 	warehouse spaces will be sequentially scanned, and will have their dictionaries checked against the ID. If the item 
-	is found, that item's area will be added back to the storage	space and then be removed from that storage space's 
-	dictionary. If unsuccessful, return False.
+	is found, that item's area will be added back to the storage space and then be removed from that storage space's 
+	dictionary. The storage location of that item
 	Parameter: id = integer of unique ID number
 	-----------------------------------------------------------------------------------------------------------------'''
 	def removeItem(self, uniqueID):
-		itemLocation = self.searchItem(uniqueID)
-		if itemLocation is not None:
-			self.spaceMatrix[itemLocation[0]][itemLocation[1]].removeItem(uniqueID)
-		# ERROR
+		item = self.searchByID(uniqueID)
+		if item is not None:
+			self.spaceMatrix[item.storedAt[0]][item.storedAt[1]].removeItem(uniqueID)
+			self.itemCount -= 1
+			return item
+		return None
 
 	'''-----------------------------------------------------------------------------------------------------------------
-	This function will search for and return the coordinates to the storage location containing the item by using the
-	warehouse's dictionary. Otherwise, return empty list
+	This function will search for and return the the item by using the warehouse's dictionary. Otherwise, return None
 	Parameter: id = integer of unique ID number
 	-----------------------------------------------------------------------------------------------------------------'''
-	def searchItem(self, uniqueID):
-		i = j = 0
+	def searchByID(self, uniqueID):
 		for row in self.spaceMatrix:
 			for space in row:
-				if uniqueID in space.itemList:
-					return [i, j]
-				j = j + 1
-			i = i + 1
+				if uniqueID in space.itemList.keys():
+					return space.itemList[uniqueID]
 		return None
 
 	'''-----------------------------------------------------------------------------------------------------------------
@@ -155,31 +150,37 @@ class Warehouse:
 	stoarage spaces. Otherwise, return empty list if no items of the given name can be found
 	Parameter: name = name of the item
 	-----------------------------------------------------------------------------------------------------------------'''
-	def searchItemByName(self, name):
-		i = j = 0
-		nameList = []
+	def searchByName(self, name):
+		nameListAllSpaces = []
 		for row in self.spaceMatrix:
 			for space in row:
-				if name in space.itemList:
-					nameList.append([[i, j], space.getItemByName(name)])
-				j = j + 1
-			i = i + 1
-		return nameList
+				nameListCurSpace = []
+				for id, item in space.itemList.items():
+					if item.name == name:
+						nameListCurSpace.append(item)
+				if len(nameListCurSpace) != 0:
+					nameListAllSpaces.append(nameListCurSpace)
+		if len(nameListAllSpaces) == 0:
+			return None
+		return nameListAllSpaces
 
 	'''-----------------------------------------------------------------------------------------------------------------
 	This function will search for and return a list of storage spaces with a matching category type. Otherwise, return 
-	an empty list ifno spaces have the given category name
+	an empty list ito spaces have the given category name
 	Parameter: name = name of the item
 	-----------------------------------------------------------------------------------------------------------------'''
-	def searchItemByCategory(self, category):
-		i = j = 0
+	def searchByCategory(self, category):
+		i = 0
 		catList = []
 		for row in self.spaceMatrix:
+			j = 0
 			for space in row:
-				if category in space.category:
+				if category is not None and category == space.category:
 					catList.append([i, j])
 				j = j + 1
 			i = i + 1
+		if len(catList) == 0:
+			return None
 		return catList
 
 	'''-----------------------------------------------------------------------------------------------------------------
@@ -193,98 +194,22 @@ class Warehouse:
 	-----------------------------------------------------------------------------------------------------------------'''
 	def findAvailableSpot(self, dimensions, category=None):
 		if category is not None:
-			i = j = 0
+			i = 0
 			for row in self.spaceMatrix:
+				j = 0
 				for space in row:
 					if category == space.category and space.spaceLeft and (space.remainingArea - (dimensions[0] * dimensions[1])) >= 0:
-						return (i, j)
+						return [i, j]
 					j = j + 1
 				i = i + 1
 
 		# We weren't able to find a storage space designated for that category or no category was specified
-		i = j = 0
+		i = 0
 		for row in self.spaceMatrix:
+			j = 0
 			for space in row:
 				if space.category is None and space.spaceLeft and (space.remainingArea - (dimensions[0] * dimensions[1])) >= 0:
-					return (i, j)
+					return [i, j]
 				j = j + 1
 			i = i + 1
 		return None
-
-# --------------------------------------------------Global Functions-------------------------------------------------- #
-
-'''---------------------------------------------------------------------------------------------------------------------
-Prompt the user in UI to get the item information and then invoke/pass this information to backend functions. Details
-of the item's new storage location or notification of failure will be output to the bottom window.
----------------------------------------------------------------------------------------------------------------------'''
-def addItem():
-	pass
-
-
-'''---------------------------------------------------------------------------------------------------------------------
-Prompt the user in UI to enter item name or item id. If the id is entered, then this will be passed to backend functions
-and immediately be removed with a notice printing in the bottom window. If the name of the item is entered, a list of 
-items with their ID's and storage locations will be printed in the item window, and the bottom window will ask the user 
-to enter the ID of the item they would like to remove. Then proceed as usual with the entered ID. Indication of success 
-or failure will be output to the bottom window.
----------------------------------------------------------------------------------------------------------------------'''
-def removeItem():
-	pass
-
-
-'''---------------------------------------------------------------------------------------------------------------------
-This will have a few variants. The first would be if the user were to enter an item ID. Here, we would simply pass this
-to the backend search funtions and then if the search is successful, the item information and location will be printed
-in the item window. If the user enter the name of the item, then the storage spaces will be sequentially searched and,
-all items matching that name will be appended to a list. This list will then be output to the item window. For all 
-unsuccessful cases, a error message will be displayed in bottom window.
----------------------------------------------------------------------------------------------------------------------'''
-def searchItemName(warehouse_num, search):
-	if search[0].isalpha():
-		item = db.search_item_by_name(warehouse_num, search)
-	else:
-		item = db.search_item_by_id(warehouse_num, search)
-
-	return item
-
-
-'''---------------------------------------------------------------------------------------------------------------------
-This will load first prompt the user to save if they are curently working on an unsaved project. Then the objects in the 
-backend will be cleared and then read into and populated from an external DB. The UI will also be cleared and redrawn.
----------------------------------------------------------------------------------------------------------------------'''
-def loadWarehouse():
-	pass
-
-
-'''---------------------------------------------------------------------------------------------------------------------
-This will write the objects in the backend to an external DB.
----------------------------------------------------------------------------------------------------------------------'''
-def saveWarehouse():
-	pass
-
-
-'''---------------------------------------------------------------------------------------------------------------------
-This will prompt the user to save if they are currently working on an unsaved warehouse. Subsequently, the objects in 
-the backend will be cleared and so will the UI
----------------------------------------------------------------------------------------------------------------------'''
-def newWarehouse():
-	pass
-
-
-'''---------------------------------------------------------------------------------------------------------------------
-This will redraw the UI whenever changes are made/functions have terminated
----------------------------------------------------------------------------------------------------------------------'''
-def updateDisplay():
-	pass
-
-
-'''---------------------------------------------------------------------------------------------------------------------
-This function prompts the user to select a storage space to set aside for a category of items of their choosing. UI 
-elements will retrieve input from the user which will be passed to the warehouse object, where it will update the
-category of the selected space
----------------------------------------------------------------------------------------------------------------------'''
-def setCategory():
-	pass
-
-def saveToFile():
-	db.save()
