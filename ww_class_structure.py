@@ -1,5 +1,7 @@
 import numpy as np
+from ww_db import database
 
+db = database()
 
 class Item:
 	def __init__(self, itemID, dimensions, name, description, storedAt):
@@ -237,8 +239,13 @@ in the item window. If the user enter the name of the item, then the storage spa
 all items matching that name will be appended to a list. This list will then be output to the item window. For all 
 unsuccessful cases, a error message will be displayed in bottom window.
 ---------------------------------------------------------------------------------------------------------------------'''
-def searchItem():
-	pass
+def searchItemName(warehouse_num, search):
+	if search[0].isalpha():
+		item = db.search_item_by_name(warehouse_num, search)
+	else:
+		item = db.search_item_by_id(warehouse_num, search)
+
+	return item
 
 
 '''---------------------------------------------------------------------------------------------------------------------
@@ -278,3 +285,6 @@ category of the selected space
 ---------------------------------------------------------------------------------------------------------------------'''
 def setCategory():
 	pass
+
+def saveToFile():
+	db.save()
