@@ -1,7 +1,4 @@
 import numpy as np
-from ww_db import database
-
-db = database()
 
 class Item:
 	def __init__(self, itemID, dimensions, name, description, storedAt):
@@ -79,13 +76,11 @@ class StorageSpace:
 
 class Warehouse:
 
-	def __init__(self, filename, dimensions = (1000, 1000), manifest={}, items=0, storageSpaces=None, numSpaces=16, id=0):
+	def __init__(self, filename, dimensions = (1000, 1000), items=0, storageSpaces=None, numSpaces=16, id=0):
 		# string filename of the warehouse to be used for read and write functions
 		self.filename = filename
 		# pair of doubles that gives the height and width of the warehouse. Dictates the area of storage spaces
 		self.dimensions = dimensions
-		# dictionary mapping item names (string) to a dictionary mapping storage location to # of occurrences
-		self.itemManifest = manifest
 		# integer number of items in the manifest for ease of use
 		self.itemCount = items
 		# integer number of storage spaces in matrix that have a remaining area value > 0
@@ -155,16 +150,16 @@ class Warehouse:
 	stoarage spaces. Otherwise, return empty list if no items of the given name can be found
 	Parameter: name = name of the item
 	-----------------------------------------------------------------------------------------------------------------'''
-	def searchItemByName(self, name):
-		i = j = 0
-		nameList = []
-		for row in self.spaceMatrix:
-			for space in row:
-				if name in space.itemList:
-					nameList.append([[i, j], space.getItemByName(name)])
-				j = j + 1
-			i = i + 1
-		return nameList
+	# def searchItemByName(self, name):
+	# 	i = j = 0
+	# 	nameList = []
+	# 	for row in self.spaceMatrix:
+	# 		for space in row:
+	# 			if name in space.itemList:
+	# 				nameList.append([[i, j], space.getItemByName(name)])
+	# 			j = j + 1
+	# 		i = i + 1
+	# 	return nameList
 
 	'''-----------------------------------------------------------------------------------------------------------------
 	This function will search for and return a list of storage spaces with a matching category type. Otherwise, return 
@@ -240,12 +235,7 @@ all items matching that name will be appended to a list. This list will then be 
 unsuccessful cases, a error message will be displayed in bottom window.
 ---------------------------------------------------------------------------------------------------------------------'''
 def searchItemName(warehouse_num, search):
-	if search[0].isalpha():
-		item = db.search_item_by_name(warehouse_num, search)
-	else:
-		item = db.search_item_by_id(warehouse_num, search)
-
-	return item
+	pass
 
 
 '''---------------------------------------------------------------------------------------------------------------------
@@ -287,4 +277,4 @@ def setCategory():
 	pass
 
 def saveToFile():
-	db.save()
+	pass

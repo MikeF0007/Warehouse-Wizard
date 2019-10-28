@@ -40,7 +40,9 @@ class database:
             json.dump(self.newData, json_file, indent=4, sort_keys=True)
 
         with open('warehouseList.json', 'w+') as json_file:
-            json.dump(self.warehouseList, json_file, indent=4, sort_keys=True)
+            json.dump(self.warehouseList, json_file)
+            # json.dump(self.newData, json_file, indent=4, sort_keys=True)
+
 
     def load(self):
         alpha = ['A', 'B', 'C', 'D']
@@ -55,6 +57,7 @@ class database:
                 itemList = self.data["warehouse"][0]["storageLocation"][index]["items"]
 
                 for k in range(len(itemList)):
+                    print(k)
                     self.warehouseObjLoad.addItem((itemList[k]["dimensions"][0],itemList[k]["dimensions"][1]),itemList[k]["name"],itemList[k]["description"])
 
         return self.warehouseObjLoad
@@ -62,19 +65,8 @@ class database:
     def add_warehouse(self, warehouse):
         print("Creating Warehouse....")
 
-        duplicate = False
+        self.warehouseList["warehouseList"].append(warehouse.filename)
 
-        if len(self.warehouseList["warehouseList"]) == 0:
-            print("I DID THIS")
-            self.warehouseList["warehouseList"].append(warehouse.filename)
-        else:
-            for i in self.warehouseList["warehouseList"]:
-                if i == warehouse.filename:
-                    duplicate = True
-
-            if duplicate == False:
-                self.warehouseList["warehouseList"].append(warehouse.filename)
-                    
         alpha = ['A', 'B', 'C', 'D']
 
         self.newData["warehouse"].append({"filename": warehouse.filename, "height": warehouse.dimensions[0], "width": warehouse.dimensions[1],
@@ -95,17 +87,25 @@ class database:
     def get_warehouse_list(self):
         return self.warehouseList
 
-dimensions = (500,500)
-itemDimensions = (50,50)
+# dimensions = (500,500)
+# itemDimensions = (50,50)
 
-db2 = database("NewTestFile5")
-warehouseTest2 = db2.load()
-warehouseTest2.addItem(itemDimensions, "Fridge3", "Taco Meat4", "Cow")
-warehouseTest2.filename = "NewTestFile5"
-db2.save(warehouseTest2)
-checklist = db2.get_warehouse_list()
+# warehouseTest = Warehouse("newWarehouse33", dimensions)
+# warehouseTest.addItem(itemDimensions, "Toaster", "A toasty toaster", "Electronic")
+# warehouseTest.addItem(itemDimensions, "Microwave", "A wavey micro", "Electronic")
+# warehouseTest.addItem(itemDimensions, "Moo", "A mooey micro", "Cow")
 
-# To print the individual items
+# db1 = database(warehouseTest.filename)
+# db1.save(warehouseTest)
+
+# db2 = database("LetsTestThis2")
+# warehouseTest2 = db2.load()
+# warehouseTest2.addItem(itemDimensions, "Fridge", "Taco Meat", "Cow")
+# warehouseTest2.filename = "NewTestFile2"
+# db2.save(warehouseTest2)
+# checklist = db2.get_warehouse_list()
+
+#To print the individual items
 # for i in checklist["warehouseList"]:
 #     print(i)
 
