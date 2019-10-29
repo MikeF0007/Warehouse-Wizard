@@ -66,19 +66,23 @@ class Ui_HelpWindow(object):
 
 
     def infoWarehouseLayout_pushButtonCLICKED(self):
-        text = "Description about WAREHOUSE LAYOUT goes here"
+        text = "The Layout that represents the entire warehouse. " \
+               "The warehouse contains sections which are Cateogries " \
+               "which cotains items in an ItemList."
         self.displayHelp_label.setText(text)
 
     def infoActivityFeed_pushButtonCLICKED(self):
-        text = "Description about ACTIVITY FEED goes here"
+        text = "It is a bottom utitlity that records the sucesses and errors " \
+               "during an execution of an action when using the program."
         self.displayHelp_label.setText(text)
 
     def infoItemList_pushButtonCLICKED(self):
-        text = "Description about ITEM LIST goes here"
+        text = "A list of Items. Each ItemList is in a green section called a Category."
         self.displayHelp_label.setText(text)
 
     def infoCategory_pushButtonCLICKED(self):
-        text = "Description about CATEGORY goes here"
+        text = "Categories are those green sections in the Warehouse Layout. Each categories have an Itemlist. " \
+               "Each differ in what they contain. Due to that fact, each category has different items than the other."
         self.displayHelp_label.setText(text)
 
 
