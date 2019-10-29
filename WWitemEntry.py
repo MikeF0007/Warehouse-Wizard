@@ -129,6 +129,9 @@ class Ui_addItemWindow(object):
         self.retranslateUi(addItemWindow)
         QtCore.QMetaObject.connectSlotsByName(addItemWindow)
 
+        self.window = QtWidgets.QApplication(sys.argv)
+        self.window.aboutToQuit.connect(self.closeEvent)
+
     def retranslateUi(self, addItemWindow):
         _translate = QtCore.QCoreApplication.translate
         addItemWindow.setWindowTitle(_translate("addItemWindow", "Add Item to Warehouse"))
@@ -142,7 +145,6 @@ class Ui_addItemWindow(object):
         self.submitButton.clicked.connect(self.submit)
 
     def submit(self):
-
         if self.widthEntry.text().isnumeric() is False or self.itemNameEntry.text() == "" or self.heightEntry.text().isnumeric() is False:
             x = QtWidgets.QMessageBox()
             QtWidgets.QMessageBox.warning(x, "Invalid Input", "Make sure required fields are filled out, and that dimensions entered are positive integers")
@@ -155,6 +157,14 @@ class Ui_addItemWindow(object):
             dump(formData, f)
             f.close()
             exit(0)
+
+    def closeEvent(self, event):
+        f = open("temp.bin", 'wb')
+        f.seek(0)
+        f.truncate()
+        f.close()
+        event.accept()
+
 
 if __name__ == "__main__":
     import sys

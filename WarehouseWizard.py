@@ -12,11 +12,12 @@ import sys
 import os
 from pickle import load
 from ww_class_structure import Warehouse, StorageSpace, Item
+from ww_db import database
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        #CONSTANT UI ELEMENTS
+        # CONSTANT UI ELEMENTS
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(1100, 900)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
@@ -340,6 +341,10 @@ class Ui_MainWindow(object):
         self.warehouse = None
         if self.loadOnStartup():
             filename = sys.argv[1]
+            print(self.db.get_warehouse_list())
+            # db = database("test")
+            # print(db.get_warehouse_list())
+
             # Put JSON stuff here
             # n = json object filename
             # m = json object manifest
@@ -401,7 +406,7 @@ class Ui_MainWindow(object):
             self.addItem.setText(_translate("MainWindow", "Add Item"))
             self.addCategory.setText(_translate("MainWindow", "Add Category"))
 
-        else:
+        else:   #Create new Warehouse
             with open('temp.bin', 'rb') as f:
                 warehouseSpecs = load(f)
                 warehouseName = warehouseSpecs[0]
@@ -417,6 +422,7 @@ class Ui_MainWindow(object):
                                                                    "This text will display the success or failure of user activities"))
                 f.flush()
                 f.close()
+                self.db = database(self.warehouse.filename)
 
             self.itemListWindow.setPlainText(_translate("MainWindow", "Information about items contained within the warehouse"))
 
@@ -1280,19 +1286,22 @@ class Ui_MainWindow(object):
     worry about saving a warehouse since one isn't currently being worked on.
     -----------------------------------------------------------------------------------------------------------------'''
     def loadFile(self, filename):
-        '''
-         if self.changesMade:
-            prompt user to save
+        db = database("")
+        if self.changesMade:
+            db.save(self.warehouse)
         else:
-            self.changesMade = False
-            load existing warehouse
-        warehouseList = database("allWarehouses")
-        prompt user of warehouse filenames
-        filename = get json filename from UI
-        db = database(filename) for smaller individual json files
-        in Load UI
-        warehouses = db.warehouseList
-        '''
+            # Show user the options they have to load
+            temp = db.get_warehouse_list()
+            loadOptions = temp.items()
+            self.warehouse = db.load()
+
+            # load existing warehouse
+        # warehouseList = database()
+        #prompt user of warehouse filenames
+        #filename = get json filename from UI
+        #db = database(filename) for smaller individual json files
+        #in Load UI
+        # warehouses = db.warehouseList
 
         print(filename)
         print("load file clicked")

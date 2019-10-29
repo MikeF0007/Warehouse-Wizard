@@ -53,23 +53,23 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Welcome to Warehouse Wizard"))
         self.newWarehouse.setText(_translate("MainWindow", "New Warehouse"))
         self.loadWarehouse.setText(_translate("MainWindow", "Load Warehouse"))
+
     def load(self):
         temp = QtWidgets.QInputDialog()
-        filename, okPressed = QtWidgets.QInputDialog.getText(temp, "File Load", "Input File Name: ")
-        if okPressed and filename != '':
-            #make this a try
-            # try:
-            #     fileContent = open(filename, "r")
-            #     ...
-            # except FileNotFoundError:
-            command = "python WarehouseWizard.py" + ' ' + filename
-            MainWindow.hide()
-            os.system(command)
-            MainWindow.show()
+        filename, okPressed = QtWidgets.QInputDialog.getText(temp, "File Load", "Input file name, excluding extensions: ")
+        # os.system("python WWLoadSelect.py")
+
+        # if okPressed and filename != '':
+        #     # See if JSON file given the file name, if it does proceed, if not, display error
+        #     command = "python WarehouseWizard.py" + ' ' + filename
+        #     MainWindow.hide()
+        #     os.system(command)
+        #     MainWindow.show()
+
     def new(self):
-        # f = open("temp.bin", "wb")
-        # f.flush()
-        # f.close()
+        f = open("temp.bin", "wb")
+        f.flush()
+        f.close()
         os.system("python WWdimensionEntry.py")
         if os.stat("temp.bin").st_size != 0:
             MainWindow.hide()
