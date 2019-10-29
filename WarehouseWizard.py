@@ -1306,7 +1306,8 @@ class Ui_MainWindow(object):
         print("save file clicked")
 
     def helpDisplay(self):
-        os.system("python WWHelpMenu.py")
+        # os.system("python WWHelpMenu.py")
+        os.system("python Help_Window.py")
 
     def loadOnStartup(self):
         if len(sys.argv) > 1:

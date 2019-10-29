@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="80674229-d9b6-42ff-a1e2-28455f18b5f4" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Help_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Help_Window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WarehouseWizard.py" beforeDir="false" afterPath="$PROJECT_DIR$/WarehouseWizard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp.bin" beforeDir="false" afterPath="$PROJECT_DIR$/temp.bin" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,8 +18,8 @@
       <file leaf-file-name="WarehouseWizard.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WarehouseWizard.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6443">
-              <caret line="383" selection-start-line="383" selection-end-line="383" />
+            <state relative-caret-position="132">
+              <caret line="1313" column="43" lean-forward="true" selection-start-line="1313" selection-start-column="43" selection-end-line="1313" selection-end-column="43" />
               <folding>
                 <element signature="e#230#272#0" expanded="true" />
               </folding>
@@ -26,10 +27,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Help_Window.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Help_Window.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Help_Window.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
+            <state relative-caret-position="317">
               <caret line="84" column="50" selection-start-line="84" selection-start-column="50" selection-end-line="84" selection-end-column="50" />
             </state>
           </provider>
@@ -39,7 +40,7 @@
         <entry file="file://$PROJECT_DIR$/HelpDescriptions.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="272">
-              <caret line="16" column="67" lean-forward="true" selection-start-line="15" selection-end-line="16" selection-end-column="67" />
+              <caret line="16" column="67" selection-start-line="15" selection-end-line="16" selection-end-column="67" />
             </state>
           </provider>
         </entry>
@@ -47,7 +48,8 @@
       <file leaf-file-name="WWdimensionEntry.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/WWdimensionEntry.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="287">
+              <caret line="119" column="70" lean-forward="true" selection-start-line="119" selection-start-column="70" selection-end-line="119" selection-end-column="70" />
               <folding>
                 <element signature="e#231#273#0" expanded="true" />
               </folding>
@@ -66,10 +68,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WWMenu.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="WWMenu.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/WWMenu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="-978">
               <folding>
                 <element signature="e#234#276#0" expanded="true" />
               </folding>
@@ -79,7 +81,11 @@
       </file>
       <file leaf-file-name="ww_class_structure.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ww_class_structure.py">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="23" selection-start-line="23" selection-end-line="23" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -87,6 +93,8 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>help</find>
+      <find>menuHelp</find>
+      <find>actionHow_to_use</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -96,15 +104,15 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/WWMenu.py" />
-        <option value="$PROJECT_DIR$/WarehouseWizard.py" />
         <option value="$PROJECT_DIR$/DOCS/Requirments.txt" />
         <option value="$PROJECT_DIR$/Help_Window.py" />
+        <option value="$PROJECT_DIR$/WarehouseWizard.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="271" />
-    <option name="y" value="-19" />
+    <option name="x" value="270" />
+    <option name="y" value="-20" />
     <option name="width" value="1440" />
     <option name="height" value="765" />
   </component>
@@ -113,6 +121,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -124,7 +133,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -142,7 +150,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Help_Window">
+  <component name="RunManager" selected="Python.WarehouseWizard">
     <configuration name="Help_Window" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Warehouse-Wizard" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -242,10 +250,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Help_Window" />
+        <item itemvalue="Python.WarehouseWizard" />
         <item itemvalue="Python.WWMenu" />
         <item itemvalue="Python.WWdimensionEntry" />
-        <item itemvalue="Python.WarehouseWizard" />
+        <item itemvalue="Python.Help_Window" />
         <item itemvalue="Python.WWitemEntry" />
       </list>
     </recent_temporary>
@@ -276,16 +284,16 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24256444" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1698612" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50033045" side_tool="true" weight="0.32905984" />
       <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.49966952" weight="0.32905984" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.49287748" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.19800569" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32851636" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3988604" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -294,6 +302,25 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
     </layout>
+    <layout-to-restore>
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.49287748" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24256444" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32851636" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50033045" side_tool="true" weight="0.32905984" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Version Control" order="10" sideWeight="0.49966952" weight="0.32905984" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+    </layout-to-restore>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -330,7 +357,66 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/WarehouseWizard.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8364">
+          <caret line="496" selection-start-line="496" selection-end-line="496" />
+          <folding>
+            <element signature="e#230#272#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HelpDescriptions.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="67" lean-forward="true" selection-start-line="15" selection-end-line="16" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WWdimensionEntry.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#231#273#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WWitemEntry.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#226#261#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WWMenu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#234#276#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ww_class_structure.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Help_Window.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1428">
+          <caret line="84" column="50" selection-start-line="84" selection-start-column="50" selection-end-line="84" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/WarehouseWizard.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="8160">
@@ -474,15 +560,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/WWdimensionEntry.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#231#273#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/misc.xml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -496,39 +573,53 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/DOCS/Requirments.txt" />
+    <entry file="file://$PROJECT_DIR$/HelpDescriptions.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="67" selection-start-line="15" selection-end-line="16" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Help_Window.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="317">
+          <caret line="84" column="50" selection-start-line="84" selection-start-column="50" selection-end-line="84" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/WWdimensionEntry.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="119" column="70" lean-forward="true" selection-start-line="119" selection-start-column="70" selection-end-line="119" selection-end-column="70" />
+          <folding>
+            <element signature="e#231#273#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ww_class_structure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/WarehouseWizard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6443">
-          <caret line="383" selection-start-line="383" selection-end-line="383" />
+        <state relative-caret-position="132">
+          <caret line="1313" column="43" lean-forward="true" selection-start-line="1313" selection-start-column="43" selection-end-line="1313" selection-end-column="43" />
           <folding>
             <element signature="e#230#272#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ww_class_structure.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/WWMenu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
+        <state relative-caret-position="-978">
           <folding>
             <element signature="e#234#276#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/HelpDescriptions.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="67" lean-forward="true" selection-start-line="15" selection-end-line="16" selection-end-column="67" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Help_Window.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="84" column="50" selection-start-line="84" selection-start-column="50" selection-end-line="84" selection-end-column="50" />
         </state>
       </provider>
     </entry>
