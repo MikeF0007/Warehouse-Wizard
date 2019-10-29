@@ -93,19 +93,22 @@ class database:
                                                                                             "name": newItemList[k].name, "description": newItemList[k].description})
     
     def get_warehouse_list(self):
-        return self.warehouseList
+        list = []
 
-dimensions = (500,500)
-itemDimensions = (50,50)
+        for i in self.warehouseList["warehouseList"]:
+            list.append(i)
 
-db2 = database("NewTestFile5")
-warehouseTest2 = db2.load()
-warehouseTest2.addItem(itemDimensions, "Fridge3", "Taco Meat4", "Cow")
-warehouseTest2.filename = "NewTestFile5"
-db2.save(warehouseTest2)
-checklist = db2.get_warehouse_list()
+        return list
 
-# To print the individual items
-# for i in checklist["warehouseList"]:
-#     print(i)
+db = database("Test")
+# newWarehouseObj = db.load()
+# newWarehouseObj.filename = "Test"
+# newWarehouseObj.addItem((20,20),"TestNew")
+# newWarehouseObj.addItem((20,20),"TestNew2")
+
+
+checklist = db.get_warehouse_list()
+
+print(type(checklist))
+print(checklist[0])
 
