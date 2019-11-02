@@ -77,7 +77,7 @@ class StorageSpace:
 
 class Warehouse:
 
-	def __init__(self, filename, dimensions = (1000, 1000), manifest={}, items=0, storageSpaces=None, numSpaces=16, id=0):
+	def __init__(self, filename, dimensions=(1000, 1000), manifest={}, items=0, storageSpaces=None, numSpaces=16, id=0):
 		# string filename of the warehouse to be used for read and write functions
 		self.filename = filename
 		# pair of doubles that gives the height and width of the warehouse. Dictates the area of storage spaces
