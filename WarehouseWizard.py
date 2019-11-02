@@ -237,12 +237,12 @@ class Ui_MainWindow(object):
         self.itemSearch.setStyleSheet("background-color: rgb(222, 197, 227);")
         self.itemSearch.setObjectName("itemSearch")
         self.buttonLayout.addWidget(self.itemSearch)
-        self.addCategory = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy.setHeightForWidth(self.addCategory.sizePolicy().hasHeightForWidth())
-        self.addCategory.setSizePolicy(sizePolicy)
-        self.addCategory.setStyleSheet("background-color: rgb(222, 197, 227);")
-        self.addCategory.setObjectName("addCategory")
-        self.buttonLayout.addWidget(self.addCategory)
+        self.manageCategory = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        sizePolicy.setHeightForWidth(self.manageCategory.sizePolicy().hasHeightForWidth())
+        self.manageCategory.setSizePolicy(sizePolicy)
+        self.manageCategory.setStyleSheet("background-color: rgb(222, 197, 227);")
+        self.manageCategory.setObjectName("manageCategory")
+        self.buttonLayout.addWidget(self.manageCategory)
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -281,7 +281,7 @@ class Ui_MainWindow(object):
         self.actionHow_to_use = QtWidgets.QAction(MainWindow)
         self.actionHow_to_use.setObjectName("actionHow_to_use")
         self.actionHow_to_use.setShortcut("Ctrl+H")
-        self.actionAdd_Category = QtWidgets.QAction(MainWindow) #11111111111111111
+        self.actionManage_Category = QtWidgets.QAction(MainWindow) #11111111111111111
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionLoad)
@@ -312,7 +312,7 @@ class Ui_MainWindow(object):
         self.addItem.clicked.connect(self.addItemClicked)
         self.removeItem.clicked.connect(self.removeItemClicked)
         self.itemSearch.clicked.connect(self.itemSearchClicked)
-        self.addCategory.clicked.connect(self.addCategoryClicked)
+        self.manageCategory.clicked.connect(self.manageCategoryClicked)
         self.homeButton.clicked.connect(self.homeButtonClicked)
 
         self.actionNew.triggered.connect(self.newFile)
@@ -341,7 +341,6 @@ class Ui_MainWindow(object):
         self.warehouse = None
         if self.loadOnStartup():
             filename = sys.argv[1]
-            print(self.db.get_warehouse_list())
             # db = database("test")
             # print(db.get_warehouse_list())
 
@@ -404,7 +403,7 @@ class Ui_MainWindow(object):
             self.d4Button.setText(_translate("MainWindow", "D4"))
             self.d4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
             self.addItem.setText(_translate("MainWindow", "Add Item"))
-            self.addCategory.setText(_translate("MainWindow", "Add Category"))
+            self.manageCategory.setText(_translate("MainWindow", "Manage Category"))
 
         else:   #Create new Warehouse
             with open('temp.bin', 'rb') as f:
@@ -413,16 +412,9 @@ class Ui_MainWindow(object):
                 # dimensions = [int(warehouseSpecs[1]), int(warehouseSpecs[2])]
                 self.warehouse = Warehouse(filename=warehouseName) # dimensions=dimensions)
                 MainWindow.setWindowTitle(_translate("MainWindow", "WarehouseWizard: " + warehouseName))
-                self.warehouseStatusWindow.setPlainText(_translate("MainWindow",
-                                                                   "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                                                                   "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                                                                   "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                                                                   "---------------------------------------------------------------------\n\n"
-                                                                   "Activity Feed:\n"
-                                                                   "This text will display the success or failure of user activities"))
+                self.updateStatusWindow("This text will display the success or failure of user activities")
                 f.flush()
                 f.close()
-                self.db = database(self.warehouse.filename)
 
             self.itemListWindow.setPlainText(_translate("MainWindow", "Information about items contained within the warehouse"))
 
@@ -460,7 +452,7 @@ class Ui_MainWindow(object):
             self.d4Button.setText(_translate("MainWindow", "D4"))
             self.d4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
             self.addItem.setText(_translate("MainWindow", "Add Item"))
-            self.addCategory.setText(_translate("MainWindow", "Add Category"))
+            self.manageCategory.setText(_translate("MainWindow", "Manage Category"))
 
     # Storage Space Functions
     # This is a helper function for converting storage space information to a string for output
@@ -470,24 +462,31 @@ class Ui_MainWindow(object):
         for item in items:
             output += str(item.itemID) + " : "
             output += str(item.name) + " : "
-            output += str(item.dimensions[0]) + " x " + str(item.dimensions[1]) + " square units\n"
+            output += str(item.dimensions[0] * item.dimensions[1]) + " square units\n"
+            output += str(item.description) + "\n"
         return output
 
     def a1Clicked(self):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[0][0].getAllItems()
         self.itemListLabel.setText("Items List: A1")
+        cat = self.warehouse.spaceMatrix[0][0].category
+        if self.warehouse.spaceMatrix[0][0].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in A1: " + str(int(self.warehouse.spaceMatrix[0][0].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in A1!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in A1!")
         else:
             self.updateItemListWindow("Space remaining in A1: " + str(int(self.warehouse.spaceMatrix[0][0].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[0][0].category
         if cat is not None:
             self.a1Button.setText("A1 \n\n" + cat)
+        else:
+            self.a1Button.setText("A1")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[0][0].remainingArea/self.warehouse.storageCap
@@ -504,17 +503,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[0][1].getAllItems()
         self.itemListLabel.setText("Items List: A2")
+        cat = self.warehouse.spaceMatrix[0][1].category
+        if self.warehouse.spaceMatrix[0][1].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in A2: " + str(int(self.warehouse.spaceMatrix[0][1].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in A2!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in A2!")
         else:
             self.updateItemListWindow("Space remaining in A2: " + str(int(self.warehouse.spaceMatrix[0][1].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[0][1].category
         if cat is not None:
             self.a2Button.setText("A2 \n\n" + cat)
+        else:
+            self.a1Button.setText("A2")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[0][1].remainingArea / self.warehouse.storageCap
@@ -531,17 +536,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[0][2].getAllItems()
         self.itemListLabel.setText("Items List: A3")
+        cat = self.warehouse.spaceMatrix[0][2].category
+        if self.warehouse.spaceMatrix[0][2].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in A3: " + str(int(self.warehouse.spaceMatrix[0][2].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in A3!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in A3!")
         else:
             self.updateItemListWindow("Space remaining in A3: " + str(int(self.warehouse.spaceMatrix[0][2].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[0][2].category
         if cat is not None:
             self.a3Button.setText("A3 \n\n" + cat)
+        else:
+            self.a1Button.setText("A3")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[0][2].remainingArea / self.warehouse.storageCap
@@ -558,17 +569,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[0][3].getAllItems()
         self.itemListLabel.setText("Items List: A4")
+        cat = self.warehouse.spaceMatrix[0][3].category
+        if self.warehouse.spaceMatrix[0][3].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in A4: " + str(int(self.warehouse.spaceMatrix[0][3].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in A4!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in A4!")
         else:
             self.updateItemListWindow("Space remaining in A4: " + str(int(self.warehouse.spaceMatrix[0][3].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[0][3].category
         if cat is not None:
             self.a4Button.setText("A4 \n\n" + cat)
+        else:
+            self.a1Button.setText("A4")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[0][3].remainingArea / self.warehouse.storageCap
@@ -585,17 +602,24 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[1][0].getAllItems()
         self.itemListLabel.setText("Items List: B1")
+        cat = self.warehouse.spaceMatrix[1][0].category
+        if self.warehouse.spaceMatrix[1][0].category is None:
+            cat = "None"
         if len(items) == 0:
-            self.updateItemListWindow("Space remaining in B1: " + str(int(self.warehouse.spaceMatrix[1][0].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in B1!")
+            self.updateItemListWindow(
+                "Space remaining in B1: " + str(int(self.warehouse.spaceMatrix[1][0].remainingArea)) +
+                " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in B1!")
         else:
             self.updateItemListWindow("Space remaining in B1: " + str(int(self.warehouse.spaceMatrix[1][0].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[1][0].category
         if cat is not None:
             self.b1Button.setText("B1 \n\n" + cat)
+        else:
+            self.a1Button.setText("B1")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[1][0].remainingArea / self.warehouse.storageCap
@@ -612,17 +636,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[1][1].getAllItems()
         self.itemListLabel.setText("Items List: B2")
+        cat = self.warehouse.spaceMatrix[1][1].category
+        if self.warehouse.spaceMatrix[1][1].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in B2: " + str(int(self.warehouse.spaceMatrix[1][1].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in B2!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in B2!")
         else:
             self.updateItemListWindow("Space remaining in B2: " + str(int(self.warehouse.spaceMatrix[1][1].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[1][1].category
         if cat is not None:
             self.b2Button.setText("B2 \n\n" + cat)
+        else:
+            self.a1Button.setText("B2")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[1][1].remainingArea / self.warehouse.storageCap
@@ -639,17 +669,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[1][2].getAllItems()
         self.itemListLabel.setText("Items List: B3")
+        cat = self.warehouse.spaceMatrix[1][2].category
+        if self.warehouse.spaceMatrix[1][2].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in B3: " + str(int(self.warehouse.spaceMatrix[1][2].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in B3!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in B3!")
         else:
             self.updateItemListWindow("Space remaining in B3: " + str(int(self.warehouse.spaceMatrix[1][2].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[1][2].category
         if cat is not None:
             self.b3Button.setText("B3 \n\n" + cat)
+        else:
+            self.a1Button.setText("B3")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[1][2].remainingArea / self.warehouse.storageCap
@@ -666,17 +702,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[1][3].getAllItems()
         self.itemListLabel.setText("Items List: B4")
+        cat = self.warehouse.spaceMatrix[1][3].category
+        if self.warehouse.spaceMatrix[1][3].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in B4: " + str(int(self.warehouse.spaceMatrix[1][3].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in B4!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in B4!")
         else:
             self.updateItemListWindow("Space remaining in B4: " + str(int(self.warehouse.spaceMatrix[1][3].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[1][3].category
         if cat is not None:
             self.b4Button.setText("B4 \n\n" + cat)
+        else:
+            self.a1Button.setText("B4")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[1][3].remainingArea / self.warehouse.storageCap
@@ -693,17 +735,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[2][0].getAllItems()
         self.itemListLabel.setText("Items List: C1")
+        cat = self.warehouse.spaceMatrix[2][0].category
+        if self.warehouse.spaceMatrix[2][0].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in C1: " + str(int(self.warehouse.spaceMatrix[2][0].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in C1!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in C1!")
         else:
             self.updateItemListWindow("Space remaining in C1: " + str(int(self.warehouse.spaceMatrix[2][0].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[2][0].category
         if cat is not None:
             self.c1Button.setText("C1 \n\n" + cat)
+        else:
+            self.a1Button.setText("C1")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[2][0].remainingArea / self.warehouse.storageCap
@@ -720,17 +768,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[2][1].getAllItems()
         self.itemListLabel.setText("Items List: C2")
+        cat = self.warehouse.spaceMatrix[2][1].category
+        if self.warehouse.spaceMatrix[2][1].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in C2: " + str(int(self.warehouse.spaceMatrix[2][1].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in C2!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in C2!")
         else:
             self.updateItemListWindow("Space remaining in C2: " + str(int(self.warehouse.spaceMatrix[2][1].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[2][1].category
         if cat is not None:
             self.c2Button.setText("C2 \n\n" + cat)
+        else:
+            self.a1Button.setText("C2")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[2][1].remainingArea / self.warehouse.storageCap
@@ -747,17 +801,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[2][2].getAllItems()
         self.itemListLabel.setText("Items List: C3")
+        cat = self.warehouse.spaceMatrix[2][2].category
+        if self.warehouse.spaceMatrix[2][2].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in C3: " + str(int(self.warehouse.spaceMatrix[2][2].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in C3!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in C3!")
         else:
             self.updateItemListWindow("Space remaining in C3: " + str(int(self.warehouse.spaceMatrix[2][2].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[2][2].category
         if cat is not None:
             self.c3Button.setText("C3 \n\n" + cat)
+        else:
+            self.a1Button.setText("C3")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[2][2].remainingArea / self.warehouse.storageCap
@@ -774,17 +834,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[2][3].getAllItems()
         self.itemListLabel.setText("Items List: C4")
+        cat = self.warehouse.spaceMatrix[2][3].category
+        if self.warehouse.spaceMatrix[2][3].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in C4: " + str(int(self.warehouse.spaceMatrix[2][3].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in C4!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in C4!")
         else:
             self.updateItemListWindow("Space remaining in C4: " + str(int(self.warehouse.spaceMatrix[2][3].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[2][3].category
         if cat is not None:
             self.c4Button.setText("C4 \n\n" + cat)
+        else:
+            self.a1Button.setText("C4")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[2][3].remainingArea / self.warehouse.storageCap
@@ -801,17 +867,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[3][0].getAllItems()
         self.itemListLabel.setText("Items List: D1")
+        cat = self.warehouse.spaceMatrix[3][0].category
+        if self.warehouse.spaceMatrix[3][0].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in D1: " + str(int(self.warehouse.spaceMatrix[3][0].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in D1!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in D1!")
         else:
             self.updateItemListWindow("Space remaining in D1: " + str(int(self.warehouse.spaceMatrix[3][0].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[3][0].category
         if cat is not None:
             self.d1Button.setText("D1 \n\n" + cat)
+        else:
+            self.a1Button.setText("D1")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[3][0].remainingArea / self.warehouse.storageCap
@@ -828,17 +900,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[3][1].getAllItems()
         self.itemListLabel.setText("Items List: D2")
+        cat = self.warehouse.spaceMatrix[3][1].category
+        if self.warehouse.spaceMatrix[3][1].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in D2: " + str(int(self.warehouse.spaceMatrix[3][1].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in D2!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in D2!")
         else:
             self.updateItemListWindow("Space remaining in D2: " + str(int(self.warehouse.spaceMatrix[3][1].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[3][1].category
         if cat is not None:
             self.d2Button.setText("D2 \n\n" + cat)
+        else:
+            self.a1Button.setText("D2")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[3][1].remainingArea / self.warehouse.storageCap
@@ -855,17 +933,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[3][2].getAllItems()
         self.itemListLabel.setText("Items List: D3")
+        cat = self.warehouse.spaceMatrix[3][2].category
+        if self.warehouse.spaceMatrix[3][2].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in D3: " + str(int(self.warehouse.spaceMatrix[3][2].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in D3!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in D3!")
         else:
             self.updateItemListWindow("Space remaining in D3: " + str(int(self.warehouse.spaceMatrix[3][2].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[3][2].category
         if cat is not None:
             self.d3Button.setText("D3 \n\n" + cat)
+        else:
+            self.a1Button.setText("D3")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[3][2].remainingArea / self.warehouse.storageCap
@@ -882,17 +966,23 @@ class Ui_MainWindow(object):
         # Output the space's contents to the item window
         items = self.warehouse.spaceMatrix[3][3].getAllItems()
         self.itemListLabel.setText("Items List: D4")
+        cat = self.warehouse.spaceMatrix[3][3].category
+        if self.warehouse.spaceMatrix[3][3].category is None:
+            cat = "None"
         if len(items) == 0:
             self.updateItemListWindow("Space remaining in D4: " + str(int(self.warehouse.spaceMatrix[3][3].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\nThere are no items stored in D4!")
+                                      " square units\nItem category: " + cat + "\n---------------------------------------------------\n\nThere are no items stored in D4!")
         else:
             self.updateItemListWindow("Space remaining in D4: " + str(int(self.warehouse.spaceMatrix[3][3].remainingArea)) +
-                                      " square units\n---------------------------------------------------\n\n<ID : Item : Dimensions>\n-------------------------------\n" + self.convertToString(items))
+                                      " square units\nItem Category: " + cat + "\n---------------------------------------------------\n\n" +
+                                      "<ID : Item : Dimensions>\n<Description>\n-------------------------------\n" + self.convertToString(items))
 
         # If the space has a designated category, label the location in the warehouse layout
         cat = self.warehouse.spaceMatrix[3][3].category
         if cat is not None:
             self.d4Button.setText("D4 \n\n" + cat)
+        else:
+            self.a1Button.setText("D4")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[3][3].remainingArea / self.warehouse.storageCap
@@ -945,7 +1035,6 @@ class Ui_MainWindow(object):
     ---------------------------------------------------------------------------------------------------------------------'''
     def addItemClicked(self):
         os.system("python WWitemEntry.py")
-        hello = os.stat("temp.bin").st_size != 0
         if os.stat("temp.bin").st_size != 0:
             with open('temp.bin', 'rb') as f:
                 itemSpecs = load(f)
@@ -961,27 +1050,17 @@ class Ui_MainWindow(object):
 
                 if storedAt is None:
                     # Output to the status window that there was a failure to add the item
-                    status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                    status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                    status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                    status += "---------------------------------------------------------------------\n\n"
-                    status += "Activity Feed:\n"
-                    status += "Item failed to be stored. There is not enough space in the warehouse for that item and/or the given category location could not be found."
-                    self.updateStatusWindow(status)
+                    self.updateStatusWindow("Item failed to be stored. There is not enough space in the warehouse for that item and/or the given category location could not be found.")
 
                 else:
                     # Output to the item window the contents of the storage space in which the item was added to
                     self.selectButtonClicked(storedAt)
                     # Output to the bottom window indication of add success at the given storage space location
                     self.changesMade = True
-                    status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                    status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                    status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                    status += "---------------------------------------------------------------------\n\n"
-                    status += "Activity Feed:\n"
-                    status += "\'" + str(itemName) + "\' has been stored at location " + getEncoding(storedAt[0]) + str(storedAt[1] + 1) + ".\n"
-                    status += str(int(dimensions[0] * dimensions[1])) + " square units of space have been deducted from " + getEncoding(storedAt[0]) + str(storedAt[1] + 1) + "."
-                    self.updateStatusWindow(status)
+
+                    activityFeed = "\'" + str(itemName) + "\' has been stored at location " + getEncoding(storedAt[0]) + str(storedAt[1] + 1) + ".\n"
+                    activityFeed += str(int(dimensions[0] * dimensions[1])) + " square units of space have been deducted from " + getEncoding(storedAt[0]) + str(storedAt[1] + 1) + "."
+                    self.updateStatusWindow(activityFeed)
 
                 f.flush()
                 f.close()
@@ -999,13 +1078,7 @@ class Ui_MainWindow(object):
     def removeItemClicked(self):
         # If there are no items in the warehouse, then we can't remove anything so terminate the function
         if self.warehouse.itemCount == 0:
-            status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-            status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-            status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-            status += "---------------------------------------------------------------------\n\n"
-            status += "Activity Feed:\n"
-            status += "There are currently no items in the warehouse."
-            self.updateStatusWindow(status)
+            self.updateStatusWindow("There are currently no items in the warehouse.")
             return
 
         # Otherwise, there are items in the warehouse. Proceed with the function.
@@ -1013,6 +1086,10 @@ class Ui_MainWindow(object):
         while True:
             # Loop until we have valid input (integer > 0)
             selection = QtWidgets.QInputDialog.getText(x, "Remove Item", "Enter the ID of the item you'd like to remove.")
+            # If the user cancelled, exit function
+            if not selection[1]:
+                self.updateStatusWindow("Item removal has been cancelled.")
+                return
             try:
                 id = int(selection[0])
             except ValueError:
@@ -1028,27 +1105,16 @@ class Ui_MainWindow(object):
         item = self.warehouse.removeItem(int(id))
         if item is None:
             # An item with the specified ID is not in the warehouse
-            status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-            status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-            status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-            status += "---------------------------------------------------------------------\n\n"
-            status += "Activity Feed:\n"
-            status += "An item with the ID " + str(id) + " doesn't exist. Please try another ID."
-            self.updateStatusWindow(status)
+            self.updateStatusWindow("An item with the ID " + str(id) + " doesn't exist. Please try another ID.")
             return
         else:
             # Output the contents of the storage space in which the item was just removed from
             self.selectButtonClicked([item.storedAt[0], item.storedAt[1]])
 
             # Output information regarding the successful removal of the item in the status window
-            status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-            status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-            status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-            status += "---------------------------------------------------------------------\n\n"
-            status += "Activity Feed:\n"
-            status += "\'" + item.name + "\' has been removed from location " + getEncoding(item.storedAt[0]) + str(item.storedAt[1] + 1) + ".\n"
-            status += str(int(item.dimensions[0] * item.dimensions[1])) + " square units of space have been restored to " + getEncoding(item.storedAt[0]) + str(item.storedAt[1] + 1) + "."
-            self.updateStatusWindow(status)
+            activityFeed = "\'" + item.name + "\' has been removed from location " + getEncoding(item.storedAt[0]) + str(item.storedAt[1] + 1) + ".\n"
+            activityFeed += str(int(item.dimensions[0] * item.dimensions[1])) + " square units of space have been restored to " + getEncoding(item.storedAt[0]) + str(item.storedAt[1] + 1) + "."
+            self.updateStatusWindow(activityFeed)
 
     '''-----------------------------------------------------------------------------------------------------------------
     This will have a few variants. The first would be if the user were to enter an item ID. Here, we would simply pass this
@@ -1065,6 +1131,11 @@ class Ui_MainWindow(object):
                                                                          "         1) Search by item ID\n"
                                                                          "         2) Search by item name\n"
                                                                          "         3) Search by category")
+            # If the user cancelled, exit function
+            if not selection[1]:
+                self.updateStatusWindow("Item/Category search has been cancelled.")
+                return
+            # Otherwise, validate input
             try:
                 searchType = int(selection[0])
             except ValueError:
@@ -1081,6 +1152,11 @@ class Ui_MainWindow(object):
             while True:
                 # Loop until we have valid input (integer > 0)
                 selection = QtWidgets.QInputDialog.getText(x, "Item Search", "Enter the ID of the item you're searching for.")
+                # If the user cancelled, exit function
+                if not selection[1]:
+                    self.updateStatusWindow("Item search has been cancelled.")
+                    return
+                # Otherwise, validate input
                 try:
                     id = int(selection[0])
                 except ValueError:
@@ -1096,17 +1172,14 @@ class Ui_MainWindow(object):
             item = self.warehouse.searchByID(id)
             if item is None:
                 # An item with the specified ID is not in the warehouse
-                status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                status += "---------------------------------------------------------------------\n\n"
-                status += "Activity Feed:\n"
-                status += "An item with the ID " + str(id) + " doesn't exist. Please try another ID."
-                self.updateStatusWindow(status)
+                self.updateStatusWindow("An item with the ID " + str(id) + " doesn't exist. Please try another ID.")
                 return
             else:
                 # Output the contents of the storage space in which the item was just removed from
-                status = "<ID : Item : Dimensions>\n-------------------------------\n"
+                status = "Space remaining at " + getEncoding(item.storedAt[0]) + str(item.storedAt[1] + 1) + ": " + str(int(self.warehouse.spaceMatrix[item.storedAt[0]][item.storedAt[1]].remainingArea))
+                status += " square units\n---------------------------------------------------\n\n"
+                status += "Item ID specified: " + str(id) + "\n"
+                status += "<ID : Item : Dimensions>\n-------------------------------\n"
                 status += getEncoding(item.storedAt[0]) + str(item.storedAt[1] + 1) + "\n"
                 status += str(id) + " : " + item.name + " : " + str(item.dimensions[0]) + " x " + str(item.dimensions[1]) + " square units\n"
                 self.updateItemListWindow(status)
@@ -1114,31 +1187,27 @@ class Ui_MainWindow(object):
                 self.itemListLabel.setText("Items List: Search")
 
                 # Output information about the successfully found item
-                status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                status += "---------------------------------------------------------------------\n\n"
-                status += "Activity Feed:\n"
-                status += "\'" + item.name + "\' has been found at location " + getEncoding(item.storedAt[0]) + str(item.storedAt[1] + 1) + ".\n"
-                self.updateStatusWindow(status)
+                activityFeed = "\'" + item.name + "\' has been found at location " + getEncoding(item.storedAt[0]) + str(item.storedAt[1] + 1) + ".\n"
+                self.updateStatusWindow(activityFeed)
 
         elif searchType == 2:
             nameSelection = QtWidgets.QInputDialog.getText(x, "Item Search", "Enter the name of the item(s) you're searching for.")
+            # If the user cancelled, exit function
+            if not nameSelection[1]:
+                self.updateStatusWindow("Item search has been cancelled.")
+                return
             targetName = nameSelection[0]
             nameList = self.warehouse.searchByName(targetName)
 
             if nameList is None:
-                status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                status += "---------------------------------------------------------------------\n\n"
-                status += "Activity Feed:\n"
-                status += "No items of the specified name are in the warehouse.\n"
-                self.updateStatusWindow(status)
+                self.updateStatusWindow("No items of the specified name are in the warehouse.")
+
             else:
                 # Output information about the successfully found items that match the target name
                 i = 0
-                status = "<ID : Item : Dimensions>\n-------------------------------\n"
+                status = "Space remaining in warehouse: " + str(int(self.totalRemainingArea())) + " square units\n---------------------------------------------------------------\n\n"
+                status += "Item name specified: " + targetName + "\n"
+                status += "<ID : Item : Dimensions>\n-------------------------------\n"
                 for namesAtSpace in nameList:
                     location = namesAtSpace[0].storedAt
                     status += str(getEncoding(location[0])) + str(location[1] + 1) + "\n"
@@ -1147,33 +1216,28 @@ class Ui_MainWindow(object):
                     status += "-----\n"
                     i += 1
                 self.updateItemListWindow(status)
+                # Change the item list label to convey that the items being displayed are the result of search
+                self.itemListLabel.setText("Items List: Search")
 
                 # Output the success of name search to bottom window
-                status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                status += "---------------------------------------------------------------------\n\n"
-                status += "Activity Feed:\n"
-                status += "Items of the specified name have been retrieved from the warehouse.\n"
-                self.updateStatusWindow(status)
+                self.updateStatusWindow("Items of the specified name have been retrieved from the warehouse.")
         else:
             catSelection = QtWidgets.QInputDialog.getText(x, "Category Search", "Enter the name of the category you're searching for.")
+            # If the user cancelled, exit function
+            if not catSelection[1]:
+                self.updateStatusWindow("Category search has been cancelled.")
+                return
             targetCat = catSelection[0]
             catList = self.warehouse.searchByCategory(targetCat)
 
             if catList is None:
                 # Output the success of name search to bottom window
-                status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                status += "---------------------------------------------------------------------\n\n"
-                status += "Activity Feed:\n"
-                status += "There are no spaces in the warehouse designated for items in the \'" + targetCat + "\' category.\n"
-                self.updateStatusWindow(status)
+                self.updateStatusWindow("There are no spaces in the warehouse designated for items in the \'" + targetCat + "\' category.")
+
             else:
                 # Output the contents of the storage spaces whose designated categories matches the target category
                 status = "Space remaining in warehouse: " + str(int(self.totalRemainingArea())) + " square units\n---------------------------------------------------------------\n\n"
-                status += "Category specified: " + targetCat + "\n------------------------------\n\n"
+                status += "Category specified: " + targetCat + "\n"
                 status += "<ID : Item : Dimensions\n--------------------------------------------\n"
                 for targetLoc in catList:
                     status += getEncoding(targetLoc[0]) + str(targetLoc[1] + 1) + "\n"
@@ -1181,73 +1245,141 @@ class Ui_MainWindow(object):
                     status += self.convertToString(items)
                     status += "-----\n"
                 self.updateItemListWindow(status)
+                # Change the item list label to convey that the items being displayed are the result of search
+                self.itemListLabel.setText("Items List: Search")
 
                 # Output the success of category search to bottom window
-                status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                status += "---------------------------------------------------------------------\n\n"
-                status += "Activity Feed:\n"
-                status += "Items falling into the \'" + targetCat + "\' category have been retrieved from the warehouse.\n"
-                self.updateStatusWindow(status)
-
-
-
-
-
-
-
+                self.updateStatusWindow("Items falling into the \'" + targetCat + "\' category have been retrieved from the warehouse.")
 
     '''-----------------------------------------------------------------------------------------------------------------
     This function prompts the user to select a storage space to set aside for a category of items of their choosing. UI 
     elements will retrieve input from the user which will be passed to the warehouse object, where it will update the
     category of the selected space
     -----------------------------------------------------------------------------------------------------------------'''
-    def addCategoryClicked(self):
+    def manageCategoryClicked(self):
         x = QtWidgets.QInputDialog()
         while True:
-            # Loop until we get valid storage space coordinates
-            locSelection = QtWidgets.QInputDialog.getText(x, "Add Category", "Enter the storage location that you want to designate an item category to.")
-            if len(locSelection[0]) != 2:
-                QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a valid storage location")
+            # Loop until we have valid input (1-3)
+            selection = QtWidgets.QInputDialog.getText(x, "Categories", "          Select Category Action:\n"
+                                                                        "         1) Add a category\n"
+                                                                        "         2) Remove a category")
+            # If user cancelled
+            if not selection[1]:
+                self.updateStatusWindow("Category management has been cancelled.")
+                return
+            # Otherwise, validate input
+            try:
+                catAction = int(selection[0])
+            except ValueError:
+                QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please select an integer between 1-2.")
                 continue
-            if locSelection[0][0].upper() == 'A' or locSelection[0][0].upper() == 'B' or locSelection[0][0].upper() == 'C' or locSelection[0][0].upper() == 'D':
-                if locSelection[0][1] == "1" or locSelection[0][1] == '2' or locSelection[0][1] == '3' or locSelection[0][1] == '4':
+            else:
+                if catAction in range(1, 3):
                     break
                 else:
+                    QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please select an integer between 1-2.")
+
+        # Input has been validated. Proceed with the function
+        if catAction == 1:
+            # User has selected to add a category to the warehouse
+            while True:
+                # Loop until we get valid storage space coordinates
+                locSelection = QtWidgets.QInputDialog.getText(x, "Add Category", "Enter the storage location that you want to designate an item category to.")
+                # If the user cancelled, exit function
+                if not locSelection[1]:
+                    self.updateStatusWindow("Category management has been cancelled.")
+                    return
+                # Otherwise, validate input
+                if len(locSelection[0]) != 2:
                     QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a valid storage location")
-            else:
-                QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a valid storage location")
+                    continue
+                if locSelection[0][0].upper() == 'A' or locSelection[0][0].upper() == 'B' or locSelection[0][0].upper() == 'C' or locSelection[0][0].upper() == 'D':
+                    if locSelection[0][1] == "1" or locSelection[0][1] == '2' or locSelection[0][1] == '3' or locSelection[0][1] == '4':
+                        break
+                    else:
+                        QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a valid storage location")
+                else:
+                    QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a valid storage location")
 
-        # Location has been validated, proceed with the function
-        while True:
-            catSelection = QtWidgets.QInputDialog.getText(x, "Add Category", "Enter name of the item category that you want to assign to " + locSelection[0].upper())
-            if catSelection[0] == "":
-                QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a category name")
-                continue
-            break
-        locSelection = getCoordEncoding(locSelection[0])
+            # Location has been validated, proceed with the function
+            while True:
+                catSelection = QtWidgets.QInputDialog.getText(x, "Add Category", "Enter name of the category label that you want to assign to " + locSelection[0].upper())
+                # If the user cancelled, exit function
+                if not catSelection[1]:
+                    self.updateStatusWindow("Category management has been cancelled.")
+                    return
+                # Otherwise, validate input
+                if catSelection[0] == "":
+                    QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a category name")
+                    continue
+                break
+            locSelection = getCoordEncoding(locSelection[0])
 
-        # Now designate the specified location to hold items of the specified category
-        self.warehouse.spaceMatrix[locSelection[0]][locSelection[1]].category = catSelection[0]
+            # Now designate the specified location to hold items of the specified category
+            self.warehouse.spaceMatrix[locSelection[0]][locSelection[1]].category = catSelection[0]
+            self.changesMade = True
 
-        # Output the contents of the location that has been designated the location
-        self.selectButtonClicked(locSelection)
+            # Output the success of the location's categorization to the bottom window
+            activityFeed = getEncoding(locSelection[0]) + str(locSelection[1] + 1) + " has been selected to hold items of the following category: " + catSelection[0] + "."
+            self.updateStatusWindow(activityFeed)
 
-        # Output the success of the space's categorization to the bottom window
-        status = "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-        status += "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-        status += "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-        status += "---------------------------------------------------------------------\n\n"
-        status += "Activity Feed:\n"
-        status += getEncoding(locSelection[0]) + str(locSelection[1] + 1) + " has been selected to hold items of the following category: " + catSelection[0] + ".\n"
-        self.updateStatusWindow(status)
+            # Output the contents of the location that has been designated the location
+            self.selectButtonClicked(locSelection)
+
+        if catAction == 2:
+            # User has selected to add a category to the warehouse
+            while True:
+                # Loop until we get valid storage space coordinates
+                locSelection = QtWidgets.QInputDialog.getText(x, "Remove Category", "Enter the storage location that you want to remove the category label from.")
+                # If the user cancelled, exit function
+                if not locSelection[1]:
+                    self.updateStatusWindow("Category management has been cancelled.")
+                    return
+                # Otherwise, validate input
+                if len(locSelection[0]) != 2:
+                    QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a valid storage location")
+                    continue
+                if locSelection[0][0].upper() == 'A' or locSelection[0][0].upper() == 'B' or locSelection[0][0].upper() == 'C' or locSelection[0][0].upper() == 'D':
+                    if locSelection[0][1] == "1" or locSelection[0][1] == '2' or locSelection[0][1] == '3' or \
+                            locSelection[0][1] == '4':
+                        break
+                    else:
+                        QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a valid storage location")
+                else:
+                    QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter in a valid storage location")
+
+            # Location has been validated, proceed with the function
+            locSelection = getCoordEncoding(locSelection[0])
+            # Capture the category label of the specified location
+            removedCat = self.warehouse.spaceMatrix[locSelection[0]][locSelection[1]].category
+
+            # If the specified location's category label is already set to None
+            if removedCat is None:
+                self.updateStatusWindow(getEncoding(locSelection[0]) + str(locSelection[1] + 1) + " does not have a category label to remove.")
+                return
+
+            # Otherwise, remove the existing category label from the specified location
+            self.warehouse.spaceMatrix[locSelection[0]][locSelection[1]].category = None
+            self.changesMade = True
+
+            # Output to the activity window the successful removal of category label at specified location
+            activityFeed = "The category label \'" + removedCat + "\' has been removed from location " + getEncoding(locSelection[0]) + str(locSelection[1] + 1) + "."
+            self.updateStatusWindow(activityFeed)
+
+            # Display the contents/update the UI for the space whose category has been removed
+            self.selectButtonClicked(locSelection)
 
     '''-----------------------------------------------------------------------------------------------------------------
     This will output a new status to the bottom status/activity window
     Parameter: status = string message to be output to the bottom window
     -----------------------------------------------------------------------------------------------------------------'''
-    def updateStatusWindow(self, status):
+    def updateStatusWindow(self, activityFeed):
+        status = "Warehouse dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
+        status += "Walkway space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
+        status += "Remaining space: " + str(int(self.totalRemainingArea())) + " square units\n"
+        status += "---------------------------------------------------------------------\n\n"
+        status += "Activity Feed:\n"
+        status += activityFeed
         self.warehouseStatusWindow.setPlainText(status)
 
     '''-----------------------------------------------------------------------------------------------------------------
@@ -1257,26 +1389,74 @@ class Ui_MainWindow(object):
     def updateItemListWindow(self, status):  # storage space and index of change as parameters?
         self.itemListWindow.setPlainText(status)
 
-    '''---------------------------------------------------------------------------------------------------------------------
+    '''-----------------------------------------------------------------------------------------------------------------
     This will prompt the user to save if they are currently working on an unsaved warehouse. Subsequently, the objects in 
     the backend will be cleared and so will the UI
-    ---------------------------------------------------------------------------------------------------------------------'''
+    -----------------------------------------------------------------------------------------------------------------'''
     def newFile(self):
+        x = QtWidgets.QInputDialog()
+        status = ""
+
         if self.changesMade:
             x = QtWidgets.QMessageBox()
-            message = QtWidgets.QMessageBox.question(x, "Save", "Would you like to save changes before creating new file?",
-                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel, QtWidgets.QMessageBox.Yes)
-            if message == QtWidgets.QMessageBox.Yes:
-                print("execute save procedure then newFile procedure")
-                # possible set changesMade to false unless we already handle that in the newFile procedure
-                self.changesMade = False
-            elif message == QtWidgets.QMessageBox.No:
-                print("User hit No LOL")
-                self.changesMade = False
-                # create a new warehouse
-            else:
-                print("User hit cancel LOL")
-                # do nothing
+            status = ""
+            if self.changesMade:
+                message = QtWidgets.QMessageBox.question(x, "Save progress",
+                                                         "Would you like to save progress before loading?",
+                                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel,
+                                                         QtWidgets.QMessageBox.Yes)
+
+                if message == QtWidgets.QMessageBox.Yes:
+                    db = database(self.warehouse.filename)
+                    db.save(self.warehouse)
+                    # Build output for the status window indicating that the previous warehouse was saved
+                    status += "Previous warehouse has been saved: " + self.warehouse.filename + '\n'
+
+                elif message == QtWidgets.QMessageBox.No:
+                    # Output to the status window indicating that the previous warehouse was discarded
+                    status += "Previous warehouse has been discarded: " + self.warehouse.filename + '\n'
+                else:
+                    # Build the output for the status window indicating that load was cancelled
+                    status += "File loading has been cancelled."
+                    self.updateStatusWindow(status)
+                    return
+
+        # The user did not cancel so and we have dealt with saving the previous warehouse, so continue with loading.
+        self.changesMade = False
+
+        # Prompt the user to enter the new warehouse's name
+        os.system("python WWdimensionEntry.py")
+        with open('temp.bin', 'rb') as f:
+            warehouseSpecs = load(f)
+            warehouseName = warehouseSpecs[0]
+            dimensions = [int(warehouseSpecs[1]), int(warehouseSpecs[2])]
+            self.warehouse = Warehouse(filename=warehouseName, dimensions=dimensions)
+            status += "New warehouse with the following name has been created: " + warehouseName
+            self.updateStatusWindow(status)
+            self.refreshUI()
+            f.flush()
+            f.close()
+
+            '''
+            response = QtWidgets.QInputDialog.getText(x, "New Warehouse", "Please enter the name of the new warehouse to be created.")
+            while True:
+                response = QtWidgets.QInputDialog.getText(x, "New Warehouse", "Please enter the name of the new warehouse to be created.")
+                # If the user cancelled, exit function
+                if not response[1]:
+                    self.updateStatusWindow("New file creation has been cancelled.")
+                    return
+                # Otherwise, validate input
+                if response[0] == "":
+                    QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter a name for your warehouse.")
+                    continue
+                break
+            # Input has been validated, proceed with the function
+            # Create a fresh, empty warehouse
+            self.warehouse = Warehouse(response[1])
+            self.refreshUI()
+
+            # get dimensions too. maybe launch the menu from the start up thingy.
+            '''
 
     '''-----------------------------------------------------------------------------------------------------------------
     This will load first prompt the user to save if they are currently working on an unsaved project in the warehouse
@@ -1285,34 +1465,83 @@ class Ui_MainWindow(object):
     redrawn. If the load function is called from the opening window, the same process will occur, but we won't need to
     worry about saving a warehouse since one isn't currently being worked on.
     -----------------------------------------------------------------------------------------------------------------'''
-    def loadFile(self, filename):
-        db = database("")
+    def loadFile(self):
+        x = QtWidgets.QMessageBox()
+        status = ""
         if self.changesMade:
-            db.save(self.warehouse)
-        else:
-            # Show user the options they have to load
-            temp = db.get_warehouse_list()
-            loadOptions = temp.items()
-            self.warehouse = db.load()
+            message = QtWidgets.QMessageBox.question(x, "Save progress",
+                                                     "Would you like to save progress before loading?",
+                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel,
+                                                     QtWidgets.QMessageBox.Yes)
 
-            # load existing warehouse
-        # warehouseList = database()
-        #prompt user of warehouse filenames
-        #filename = get json filename from UI
-        #db = database(filename) for smaller individual json files
-        #in Load UI
-        # warehouses = db.warehouseList
+            if message == QtWidgets.QMessageBox.Yes:
+                db = database(self.warehouse.filename)
+                db.save(self.warehouse)
+                # Build output for the status window indicating that the previous warehouse was saved
+                status += "Previous warehouse has been saved: " + self.warehouse.filename + '\n'
 
-        print(filename)
-        print("load file clicked")
+            elif message == QtWidgets.QMessageBox.No:
+                # Output to the status window indicating that the previous warehouse was discarded
+                status += "Previous warehouse has been discarded: " + self.warehouse.filename + '\n'
+            else:
+                # Build the output for the status window indicating that load was cancelled
+                status += "File loading has been cancelled."
+                self.updateStatusWindow(status)
+                return
+
+        # The user did not cancel so and we have dealt with saving the previous warehouse, so continue with loading.
+        self.changesMade = False
+
+        # Get the list of existing warehouse names
+        db = database(self.warehouse.filename)
+        warehouses = db.get_warehouse_list()
+        if warehouses is None:
+            status += "There are no existing warehouses to load!"
+            self.updateStatusWindow(status)
+            return
+
+        # Build the prompt to show the user the warehouses they have to choose from
+        loadPrompt = "Choose from the following warehouses to load:\n"
+        i = 1
+        for wName in warehouses:
+            loadPrompt += '   ' + wName
+            if i != len(warehouses):
+                loadPrompt += "\n"
+            i += 1
+
+        # Prompt user to enter the filename of the warehouse to load.
+        filename = QtWidgets.QInputDialog.getText(x, "Load Warehouse", loadPrompt)
+
+        # Loop until either the user cancels or enters a valid file to load
+        while filename[0] not in warehouses and filename[1]:
+            QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please select one of the listed warehouse names to load")
+            filename = QtWidgets.QInputDialog.getText(x, "Load Warehouse", loadPrompt)
+
+        # If the user cancelled, exit function
+        if not filename[1]:
+            status += "File loading has been cancelled."
+            self.updateStatusWindow(status)
+            return
+
+        # At this point, the user has entered a valid filename to load. Proceed with the function
+        db = database(filename[0])
+        self.warehouse = db.load()
+        status += "Current warehouse has successfully been loaded: " + filename[0]
+        self.updateStatusWindow(status)
+
+        # Update the UI display
+        self.refreshUI()
 
     '''-----------------------------------------------------------------------------------------------------------------
     This will write the objects in the backend to an external DB.
     -----------------------------------------------------------------------------------------------------------------'''
     def saveFile(self):
-        # #once we save
-        # self.changesMade = False
-        print("save file clicked")
+        self.changesMade = False
+        db = database(self.warehouse.filename)
+        db.save(self.warehouse)
+
+        # Output to the status window that the warehouse was successfully saved
+        self.updateStatusWindow("The current warehouse was saved: " + self.warehouse.filename)
 
     def helpDisplay(self):
         os.system("python WWHelpMenu.py")
@@ -1336,6 +1565,29 @@ class Ui_MainWindow(object):
                     areaLeft -= (item.dimensions[0] * item.dimensions[1])
         return areaLeft
 
+
+    '''-----------------------------------------------------------------------------------------------------------------
+    This function will update the UI by cycling through each of the buttons to update category labels and location colors
+    and will then display the warehouse contents in the item window.
+    -----------------------------------------------------------------------------------------------------------------'''
+    def refreshUI(self):
+        self.a1Clicked()
+        self.a2Clicked()
+        self.a3Clicked()
+        self.a4Clicked()
+        self.b1Clicked()
+        self.b2Clicked()
+        self.b3Clicked()
+        self.b4Clicked()
+        self.c1Clicked()
+        self.c2Clicked()
+        self.c3Clicked()
+        self.c4Clicked()
+        self.d1Clicked()
+        self.d2Clicked()
+        self.d3Clicked()
+        self.d4Clicked()
+        self.homeButtonClicked()
 
     '''-----------------------------------------------------------------------------------------------------------------
     This function will take a pair/list of coordinates being interacted with and call the correct 'clicked' function.
