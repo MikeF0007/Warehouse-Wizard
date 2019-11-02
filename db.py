@@ -1,78 +1,107 @@
 import json
+from ww_class_structure import Warehouse, StorageSpace, Item
+import os.path
+from os import path
+import time
 
-class db:
+
+class database:
     data = {}
+    newData = {}
+    warehouseList = {}
+    nextUniqueID = 0
 
-    def __init__(self):
-        with open('db.json') as json_file:
-            self.data = json.load(json_file)
+    def __init__(self, filename):
+        if path.exists(filename + ".json"):
+            with open(filename + '.json') as json_file:
+                self.data = json.load(json_file)
+        else:
+            with open(filename + '.json', 'a+') as json_file:
+                json.dump({
+                    "warehouse": []
+                }, json_file, indent=4, sort_keys=True)
+                json_file.close()
 
-    def dict_to_json(self, type):
-        with open(type + '.json', 'w+') as json_file:
-            json.dump(self.data, json_file, indent=4, sort_keys=True)
+            with open(filename + '.json') as json_file:
+                self.data = json.load(json_file)
+                json_file.close()
 
-    def add_item(self, name, w, h, description, category, warehouse_num):
-        item_id = len(self.data["warehouse"][warehouse_num-1]["items"])
-        self.data["warehouse"][warehouse_num-1]["items"].append({"id": item_id, "name": name, 
-                                                                "width": w, "height": h, "description": description,
-                                                                "category": category})
-        self.dict_to_json("db")
+        with open('warehouselist.json') as json_file:
+            self.warehouseList = json.load(json_file)
+            json_file.close()
 
-    def add_warehouse(self, w, l):
-        warehouse_id = len(self.data["warehouse"]) + 1
+    def save(self, warehouse):
+        print("Writing to Database....")
+        self.warehouseObj = warehouse
+
+        self.newData = {u'warehouse': []}
+        self.add_warehouse(self.warehouseObj)
+
+        with open(self.warehouseObj.filename + '.json', 'w') as json_file:
+            json.dump(self.newData, json_file, indent=4, sort_keys=True)
+
+        with open('warehouseList.json', 'w+') as json_file:
+            json.dump(self.warehouseList, json_file, indent=4, sort_keys=True)
+
+    def load(self):
+        alpha = ['A', 'B', 'C', 'D']
+        self.warehouseObjLoad = Warehouse(self.data["warehouse"][0]["filename"],
+                                          (self.data["warehouse"][0]["height"], self.data["warehouse"][0]["width"]))
+
+        self.warehouseObjLoad.itemCount = self.data["warehouse"][0]["itemCount"]
+        self.warehouseObjLoad.storageCap = self.data["warehouse"][0]["storageCap"]
+
+        for i in range(0, 4):
+            for j in range(1, 5):
+                index = alpha[i] + str(j)
+                itemList = self.data["warehouse"][0]["storageLocation"][index]["items"]
+
+                for k in range(len(itemList)):
+                    self.warehouseObjLoad.addItem((itemList[k]["dimensions"][0], itemList[k]["dimensions"][1]),
+                                                  itemList[k]["name"], itemList[k]["description"])
+
+        return self.warehouseObjLoad
+
+    def add_warehouse(self, warehouse):
+        print("Creating Warehouse....")
+
+        duplicate = False
+
+        if len(self.warehouseList["warehouseList"]) == 0:
+            print("I DID THIS")
+            self.warehouseList["warehouseList"].append(warehouse.filename)
+        else:
+            for i in self.warehouseList["warehouseList"]:
+                if i == warehouse.filename:
+                    duplicate = True
+
+            if duplicate == False:
+                self.warehouseList["warehouseList"].append(warehouse.filename)
+
         alpha = ['A', 'B', 'C', 'D']
 
-        self.data["warehouse"].append({"id": warehouse_id, "length": l, "width": w, "items": [], "storage_loc":{}})
-        
-        for i in range(0,4):
-            for j in range(1,5):
-                 self.data["warehouse"][warehouse_id-1]["storage_loc"].update({alpha[i]+str(j):{}})
+        self.newData["warehouse"].append(
+            {"filename": warehouse.filename, "height": warehouse.dimensions[0], "width": warehouse.dimensions[1],
+             "storageCap": warehouse.storageCap, "itemCount": warehouse.itemCount, "storageLocation": {},
+             "nextUniqueID": warehouse.nextUniqueID})
 
-        self.dict_to_json("db")
+        for i in range(0, 4):
+            for j in range(1, 5):
+                self.newData["warehouse"][0]["storageLocation"].update({alpha[i] + str(j): {
+                    "remainingArea": warehouse.spaceMatrix[i][j - 1].remainingArea,
+                    "category": warehouse.spaceMatrix[i][j - 1].category,
+                    "items": [], "spaceLeft": warehouse.spaceMatrix[i][j - 1].spaceLeft}})
 
-    def get_item_list(self, warehouse_num):
-        return self.data["warehouse"][warehouse_num-1]["items"]
+                newItemList = warehouse.spaceMatrix[i][j - 1].getAllItems()
+                index = alpha[i] + str(j)
+
+                for k in range(len(newItemList)):
+                    self.newData["warehouse"][0]["storageLocation"][index]["items"].append(
+                        {"itemID": newItemList[k].itemID, "dimensions": newItemList[k].dimensions,
+                         "name": newItemList[k].name, "description": newItemList[k].description})
 
     def get_warehouse_list(self):
-        return self.data["warehouse"]
-
-    def delete_item_by_id(self, warehouse_num, item_id):
-        for i in range(len(self.data["warehouse"][warehouse_num-1]["items"])):
-            if(self.data["warehouse"][warehouse_num-1]["items"][i]["id"] == item_id):
-                del self.data["warehouse"][warehouse_num-1]["items"][i]
-                self.reindex_items(warehouse_num)
-                break
-        
-        print("Unable to find item by ID. Please try again.")
-
-    def delete_item_by_name(self, warehouse_num, item_name):
-        for i in range(len(self.data["warehouse"][warehouse_num-1]["items"])):
-            if(self.data["warehouse"][warehouse_num-1]["items"][i]["name"] == item_name):
-                del self.data["warehouse"][warehouse_num-1]["items"][i]
-                self.reindex_items(warehouse_num)
-                break
-        
-        print("Unable to find item by name. Please try again.")
-
-    def delete_warehouse(self, warehouse_num):
-        for i in range(len(self.data["warehouse"])):
-            if(self.data["warehouse"][i]["id"] == warehouse_num):
-                del self.data["warehouse"][i]
-                self.reindex_warehouse()            
-                break
-        
-        print("Unable to find warehouse by ID. Please try again.")
-
-    def reindex_items(self, warehouse_num):
-        for i in range(len(self.data["warehouse"][warehouse_num]["items"])):
-                self.data["warehouse"][warehouse_num]["items"]["id"] = i + 1
-        self.dict_to_json("db")
-
-    def reindex_warehouse(self):
-        for i in range(len(self.data["warehouse"])):
-                self.data["warehouse"][i]["id"] = i + 1
-        self.dict_to_json("db")
-
-db1 = db()
-
-db1.add_warehouse(500,500)
+        list = []
+        for i in self.warehouseList["warehouseList"]:
+            list.append(i)
+        return list
