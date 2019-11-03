@@ -102,10 +102,8 @@ class database:
 
     def get_warehouse_list(self):
         list = []
-
         for i in self.warehouseList["warehouseList"]:
             list.append(i)
-
         return list
 
 

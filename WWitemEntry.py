@@ -130,7 +130,6 @@ class Ui_addItemWindow(object):
         QtCore.QMetaObject.connectSlotsByName(addItemWindow)
 
         self.window = QtWidgets.QApplication(sys.argv)
-        self.window.aboutToQuit.connect(self.closeEvent)
 
     def retranslateUi(self, addItemWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -143,6 +142,10 @@ class Ui_addItemWindow(object):
         self.submitButton.setText(_translate("addItemWindow", "Submit"))
         self.noticeLabel.setText(_translate("addItemWindow", "fields with * are required"))
         self.submitButton.clicked.connect(self.submit)
+        self.f = open("temp.bin", 'wb')
+        self.f.seek(0)
+        self.f.truncate()
+        self.f.close()
 
     def submit(self):
         if self.widthEntry.text().isnumeric() is False or self.itemNameEntry.text() == "" or self.heightEntry.text().isnumeric() is False:
@@ -157,13 +160,6 @@ class Ui_addItemWindow(object):
             dump(formData, f)
             f.close()
             exit(0)
-
-    def closeEvent(self, event):
-        f = open("temp.bin", 'wb')
-        f.seek(0)
-        f.truncate()
-        f.close()
-        event.accept()
 
 
 if __name__ == "__main__":

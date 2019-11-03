@@ -11,6 +11,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 import sys
 import os
+from ww_db import database
+from pickle import dump
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -55,23 +57,47 @@ class Ui_MainWindow(object):
         self.loadWarehouse.setText(_translate("MainWindow", "Load Warehouse"))
 
     def load(self):
-        temp = QtWidgets.QInputDialog()
-        filename, okPressed = QtWidgets.QInputDialog.getText(temp, "File Load", "Input file name, excluding extensions: ")
-        # os.system("python WWLoadSelect.py")
+        x = QtWidgets.QInputDialog()
+        # Get the list of existing warehouse names
+        db = database("dummy")
+        warehouses = db.get_warehouse_list()
+        if warehouses is None:
+            QtWidgets.QMessageBox.warning(x, "No Saved Files", "There are no existing warehouses to load!")
+            return
 
-        # if okPressed and filename != '':
-        #     # See if JSON file given the file name, if it does proceed, if not, display error
-        #     command = "python WarehouseWizard.py" + ' ' + filename
-        #     MainWindow.hide()
-        #     os.system(command)
-        #     MainWindow.show()
+        # Build the prompt to show the user the warehouses they have to choose from
+        loadPrompt = "Choose from the following warehouses to load:\n"
+        i = 1
+        for wName in warehouses:
+            loadPrompt += '   ' + wName
+            if i != len(warehouses):
+                loadPrompt += "\n"
+            i += 1
+
+        # Prompt user to enter the filename of the warehouse to load.
+        filename = QtWidgets.QInputDialog.getText(x, "Load Warehouse", loadPrompt)
+
+        # Loop until either the user cancels or enters a valid file to load
+        while filename[0] not in warehouses and filename[1]:
+            QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please select one of the listed warehouse names to load")
+            filename = QtWidgets.QInputDialog.getText(x, "Load Warehouse", loadPrompt)
+
+        # If the user cancelled, exit function
+        if not filename[1]:
+            return
+
+        # At this point, the user has entered a valid filename to load. Proceed with the function
+
+        formData = [True, filename[0]]
+        f = open("temp.bin", 'wb')
+        dump(formData, f)
+        f.close()
+
+        os.system("python WarehouseWizard.py ")
 
     def new(self):
-        f = open("temp.bin", "wb")
-        f.flush()
-        f.close()
         os.system("python WWdimensionEntry.py")
-        if os.stat("temp.bin").st_size != 0:
+        if os.stat("temp.bin").st_size > 0:
             MainWindow.hide()
             os.system("python WarehouseWizard.py")
             MainWindow.show()

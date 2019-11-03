@@ -338,121 +338,111 @@ class Ui_MainWindow(object):
         self.warehouseLabel.setText(_translate("MainWindow", "Warehouse Layout"))
 
         # Dynamic UI Elements (May be initialized differently depending on whether we're loading or starting from scratch)
-        self.warehouse = None
-        if self.loadOnStartup():
-            filename = sys.argv[1]
-            # db = database("test")
-            # print(db.get_warehouse_list())
+        self.warehouse = Warehouse("")
 
-            # Put JSON stuff here
-            # n = json object filename
-            # m = json object manifest
-            # numI = json object item count
-            # numOS = json object open spaces
-            # d = json object dimensions
-            # uID = json object id counter
-            # sc = json object storage cap
-            # ss = json object storage spaces
-            # self.warehouse = Warehouse(filename = filename, itemManifest = m, itemCount = numI, numOpenSpaces = numOS, dimensions = d, nextUniqueID = uID, storageCap = sc, storageSpaces = ss)
-            # self.warehouse = Warehouse(filename)  # leave it as default for now so we can continue testing
+        with open('temp.bin', 'rb') as f:
+            menuSpecifications = load(f)
+            loading = menuSpecifications[0]
 
-            MainWindow.setWindowTitle(_translate("MainWindow", "WarehouseWizard: " + filename))
-
-            self.warehouseStatusWindow.setPlainText(_translate("MainWindow",
-                                                               "Warehouse Dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
-                                                               "Walkway Space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
-                                                               "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
-                                                               "---------------------------------------------------------------------\n\n"
-                                                               "Activity Feed:\n"
-                                                               "This text will display the success or failure of user activities"))
-
-            self.itemListWindow.setPlainText(_translate("MainWindow", "(Information about items contained within the warehouse will be displayed here)"))
-            self.warehouseLabel.setText(_translate("MainWindow", "Warehouse Layout"))
-            self.itemListLabel.setText(_translate("MainWindow", "Items List: Warehouse"))
-            # Check if Each available space has a category, and check contents to set color accordingly
-            self.a1Button.setText(_translate("MainWindow", "A1"))
-            self.a1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.a2Button.setText(_translate("MainWindow", "A2"))
-            self.a2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.a3Button.setText(_translate("MainWindow", "A3"))
-            self.a3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.a4Button.setText(_translate("MainWindow", "A4"))
-            self.a4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.b1Button.setText(_translate("MainWindow", "B1"))
-            self.b1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.b2Button.setText(_translate("MainWindow", "B2"))
-            self.b2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.b3Button.setText(_translate("MainWindow", "B3"))
-            self.b3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.b4Button.setText(_translate("MainWindow", "B4"))
-            self.b4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.c1Button.setText(_translate("MainWindow", "C1"))
-            self.c1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.c2Button.setText(_translate("MainWindow", "C2"))
-            self.c2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.c3Button.setText(_translate("MainWindow", "C3"))
-            self.c3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.c4Button.setText(_translate("MainWindow", "C4"))
-            self.c4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.d1Button.setText(_translate("MainWindow", "D1"))
-            self.d1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.d2Button.setText(_translate("MainWindow", "D2"))
-            self.d2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.d3Button.setText(_translate("MainWindow", "D3"))
-            self.d3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.d4Button.setText(_translate("MainWindow", "D4"))
-            self.d4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.addItem.setText(_translate("MainWindow", "Add Item"))
-            self.manageCategory.setText(_translate("MainWindow", "Manage Category"))
-
-        else:   #Create new Warehouse
-            with open('temp.bin', 'rb') as f:
-                warehouseSpecs = load(f)
-                warehouseName = warehouseSpecs[0]
-                # dimensions = [int(warehouseSpecs[1]), int(warehouseSpecs[2])]
-                self.warehouse = Warehouse(filename=warehouseName) # dimensions=dimensions)
-                MainWindow.setWindowTitle(_translate("MainWindow", "WarehouseWizard: " + warehouseName))
-                self.updateStatusWindow("This text will display the success or failure of user activities")
-                f.flush()
+            if loading:
+                filename = menuSpecifications[1]
+                db = database(filename)
+                self.warehouse = db.load()
+                MainWindow.setWindowTitle(_translate("MainWindow", "WarehouseWizard: " + filename))
                 f.close()
+                self.warehouseStatusWindow.setPlainText(_translate("MainWindow",
+                                                                   "Warehouse dimensions: " + str(self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) + " square units (" + str(self.warehouse.dimensions[0]) + " x " + str(self.warehouse.dimensions[1]) + ")\n"
+                                                                   "Walkway space: " + str(int((self.warehouse.dimensions[0] * self.warehouse.dimensions[1]) - (self.warehouse.storageCap * 16))) + " square units\n"
+                                                                   "Remaining Space: " + str(int(self.totalRemainingArea())) + " square units\n"
+                                                                   "---------------------------------------------------------------------\n\n"
+                                                                   "Activity Feed:\n"
+                                                                   "This text will display the success or failure of user activities"))
 
-            self.itemListWindow.setPlainText(_translate("MainWindow", "Information about items contained within the warehouse"))
+                self.itemListWindow.setPlainText(_translate("MainWindow", "(Information about items contained within the warehouse will be displayed here)"))
+                self.warehouseLabel.setText(_translate("MainWindow", "Warehouse Layout"))
+                self.itemListLabel.setText(_translate("MainWindow", "Items List: Warehouse"))
+                # Check if Each available space has a category, and check contents to set color accordingly
+                self.a1Button.setText(_translate("MainWindow", "A1"))
+                self.a1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.a2Button.setText(_translate("MainWindow", "A2"))
+                self.a2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.a3Button.setText(_translate("MainWindow", "A3"))
+                self.a3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.a4Button.setText(_translate("MainWindow", "A4"))
+                self.a4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.b1Button.setText(_translate("MainWindow", "B1"))
+                self.b1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.b2Button.setText(_translate("MainWindow", "B2"))
+                self.b2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.b3Button.setText(_translate("MainWindow", "B3"))
+                self.b3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.b4Button.setText(_translate("MainWindow", "B4"))
+                self.b4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.c1Button.setText(_translate("MainWindow", "C1"))
+                self.c1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.c2Button.setText(_translate("MainWindow", "C2"))
+                self.c2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.c3Button.setText(_translate("MainWindow", "C3"))
+                self.c3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.c4Button.setText(_translate("MainWindow", "C4"))
+                self.c4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.d1Button.setText(_translate("MainWindow", "D1"))
+                self.d1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.d2Button.setText(_translate("MainWindow", "D2"))
+                self.d2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.d3Button.setText(_translate("MainWindow", "D3"))
+                self.d3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.d4Button.setText(_translate("MainWindow", "D4"))
+                self.d4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                self.addItem.setText(_translate("MainWindow", "Add Item"))
+                self.manageCategory.setText(_translate("MainWindow", "Manage Category"))
+                self.refreshUI()
+            else:
+                    warehouseName = menuSpecifications[1]
+                    dimensions = [int(menuSpecifications[2]), int(menuSpecifications[3])]
+                    self.warehouse.filename = warehouseName
+                    self.warehouse.dimensions = dimensions
 
-            self.itemListLabel.setText(_translate("MainWindow", "Items List: Warehouse"))
-            self.a1Button.setText(_translate("MainWindow", "A1"))
-            self.a1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.a2Button.setText(_translate("MainWindow", "A2"))
-            self.a2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.a3Button.setText(_translate("MainWindow", "A3"))
-            self.a3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.a4Button.setText(_translate("MainWindow", "A4"))
-            self.a4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.b1Button.setText(_translate("MainWindow", "B1"))
-            self.b1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.b2Button.setText(_translate("MainWindow", "B2"))
-            self.b2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.b3Button.setText(_translate("MainWindow", "B3"))
-            self.b3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.b4Button.setText(_translate("MainWindow", "B4"))
-            self.b4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.c1Button.setText(_translate("MainWindow", "C1"))
-            self.c1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.c2Button.setText(_translate("MainWindow", "C2"))
-            self.c2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.c3Button.setText(_translate("MainWindow", "C3"))
-            self.c3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.c4Button.setText(_translate("MainWindow", "C4"))
-            self.c4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.d1Button.setText(_translate("MainWindow", "D1"))
-            self.d1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.d2Button.setText(_translate("MainWindow", "D2"))
-            self.d2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.d3Button.setText(_translate("MainWindow", "D3"))
-            self.d3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.d4Button.setText(_translate("MainWindow", "D4"))
-            self.d4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
-            self.addItem.setText(_translate("MainWindow", "Add Item"))
-            self.manageCategory.setText(_translate("MainWindow", "Manage Category"))
+                    MainWindow.setWindowTitle(_translate("MainWindow", "WarehouseWizard: " + warehouseName))
+                    self.updateStatusWindow("This text will display the success or failure of user activities")
+                    f.close()
+
+                    self.itemListWindow.setPlainText(_translate("MainWindow", "Information about items contained within the warehouse"))
+                    self.itemListLabel.setText(_translate("MainWindow", "Items List: Warehouse"))
+                    self.a1Button.setText(_translate("MainWindow", "A1"))
+                    self.a1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.a2Button.setText(_translate("MainWindow", "A2"))
+                    self.a2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.a3Button.setText(_translate("MainWindow", "A3"))
+                    self.a3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.a4Button.setText(_translate("MainWindow", "A4"))
+                    self.a4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.b1Button.setText(_translate("MainWindow", "B1"))
+                    self.b1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.b2Button.setText(_translate("MainWindow", "B2"))
+                    self.b2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.b3Button.setText(_translate("MainWindow", "B3"))
+                    self.b3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.b4Button.setText(_translate("MainWindow", "B4"))
+                    self.b4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.c1Button.setText(_translate("MainWindow", "C1"))
+                    self.c1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.c2Button.setText(_translate("MainWindow", "C2"))
+                    self.c2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.c3Button.setText(_translate("MainWindow", "C3"))
+                    self.c3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.c4Button.setText(_translate("MainWindow", "C4"))
+                    self.c4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.d1Button.setText(_translate("MainWindow", "D1"))
+                    self.d1Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.d2Button.setText(_translate("MainWindow", "D2"))
+                    self.d2Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.d3Button.setText(_translate("MainWindow", "D3"))
+                    self.d3Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.d4Button.setText(_translate("MainWindow", "D4"))
+                    self.d4Button.setStyleSheet("background-color: rgb(181, 222, 173);")
+                    self.addItem.setText(_translate("MainWindow", "Add Item"))
+                    self.manageCategory.setText(_translate("MainWindow", "Manage Category"))
 
     # Storage Space Functions
     # This is a helper function for converting storage space information to a string for output
@@ -519,7 +509,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.a2Button.setText("A2 \n\n" + cat)
         else:
-            self.a1Button.setText("A2")
+            self.a2Button.setText("A2")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[0][1].remainingArea / self.warehouse.storageCap
@@ -552,7 +542,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.a3Button.setText("A3 \n\n" + cat)
         else:
-            self.a1Button.setText("A3")
+            self.a3Button.setText("A3")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[0][2].remainingArea / self.warehouse.storageCap
@@ -585,7 +575,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.a4Button.setText("A4 \n\n" + cat)
         else:
-            self.a1Button.setText("A4")
+            self.a4Button.setText("A4")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[0][3].remainingArea / self.warehouse.storageCap
@@ -619,7 +609,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.b1Button.setText("B1 \n\n" + cat)
         else:
-            self.a1Button.setText("B1")
+            self.b1Button.setText("B1")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[1][0].remainingArea / self.warehouse.storageCap
@@ -652,7 +642,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.b2Button.setText("B2 \n\n" + cat)
         else:
-            self.a1Button.setText("B2")
+            self.b2Button.setText("B2")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[1][1].remainingArea / self.warehouse.storageCap
@@ -685,7 +675,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.b3Button.setText("B3 \n\n" + cat)
         else:
-            self.a1Button.setText("B3")
+            self.b3Button.setText("B3")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[1][2].remainingArea / self.warehouse.storageCap
@@ -718,7 +708,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.b4Button.setText("B4 \n\n" + cat)
         else:
-            self.a1Button.setText("B4")
+            self.b4Button.setText("B4")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[1][3].remainingArea / self.warehouse.storageCap
@@ -751,7 +741,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.c1Button.setText("C1 \n\n" + cat)
         else:
-            self.a1Button.setText("C1")
+            self.c1Button.setText("C1")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[2][0].remainingArea / self.warehouse.storageCap
@@ -784,7 +774,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.c2Button.setText("C2 \n\n" + cat)
         else:
-            self.a1Button.setText("C2")
+            self.c2Button.setText("C2")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[2][1].remainingArea / self.warehouse.storageCap
@@ -817,7 +807,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.c3Button.setText("C3 \n\n" + cat)
         else:
-            self.a1Button.setText("C3")
+            self.c3Button.setText("C3")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[2][2].remainingArea / self.warehouse.storageCap
@@ -850,7 +840,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.c4Button.setText("C4 \n\n" + cat)
         else:
-            self.a1Button.setText("C4")
+            self.c4Button.setText("C4")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[2][3].remainingArea / self.warehouse.storageCap
@@ -883,7 +873,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.d1Button.setText("D1 \n\n" + cat)
         else:
-            self.a1Button.setText("D1")
+            self.d1Button.setText("D1")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[3][0].remainingArea / self.warehouse.storageCap
@@ -916,7 +906,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.d2Button.setText("D2 \n\n" + cat)
         else:
-            self.a1Button.setText("D2")
+            self.d2Button.setText("D2")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[3][1].remainingArea / self.warehouse.storageCap
@@ -949,7 +939,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.d3Button.setText("D3 \n\n" + cat)
         else:
-            self.a1Button.setText("D3")
+            self.d3Button.setText("D3")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[3][2].remainingArea / self.warehouse.storageCap
@@ -982,7 +972,7 @@ class Ui_MainWindow(object):
         if cat is not None:
             self.d4Button.setText("D4 \n\n" + cat)
         else:
-            self.a1Button.setText("D4")
+            self.d4Button.setText("D4")
 
         # Update the color of the location in the warehouse layout to convey its fullness
         spaceRatio = self.warehouse.spaceMatrix[3][3].remainingArea / self.warehouse.storageCap
@@ -1061,11 +1051,11 @@ class Ui_MainWindow(object):
                     activityFeed = "\'" + str(itemName) + "\' has been stored at location " + getEncoding(storedAt[0]) + str(storedAt[1] + 1) + ".\n"
                     activityFeed += str(int(dimensions[0] * dimensions[1])) + " square units of space have been deducted from " + getEncoding(storedAt[0]) + str(storedAt[1] + 1) + "."
                     self.updateStatusWindow(activityFeed)
-
-                f.flush()
+                f.seek(0)
+                f.truncate()
                 f.close()
         else:
-            print("user canceled addItem")
+            self.updateStatusWindow("Add item has been cancelled.")
 
     '''-----------------------------------------------------------------------------------------------------------------
     Prompt the user in UI to enter item name or item id. If the id is entered, then this will be passed to backend functions
@@ -1108,6 +1098,7 @@ class Ui_MainWindow(object):
             self.updateStatusWindow("An item with the ID " + str(id) + " doesn't exist. Please try another ID.")
             return
         else:
+            self.changesMade = True
             # Output the contents of the storage space in which the item was just removed from
             self.selectButtonClicked([item.storedAt[0], item.storedAt[1]])
 
@@ -1402,7 +1393,7 @@ class Ui_MainWindow(object):
             status = ""
             if self.changesMade:
                 message = QtWidgets.QMessageBox.question(x, "Save progress",
-                                                         "Would you like to save progress before loading?",
+                                                         "Would you like to save progress before creating a new file?",
                                                          QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel,
                                                          QtWidgets.QMessageBox.Yes)
 
@@ -1417,46 +1408,27 @@ class Ui_MainWindow(object):
                     status += "Previous warehouse has been discarded: " + self.warehouse.filename + '\n'
                 else:
                     # Build the output for the status window indicating that load was cancelled
-                    status += "File loading has been cancelled."
+                    status += "New file has been cancelled."
                     self.updateStatusWindow(status)
                     return
 
-        # The user did not cancel so and we have dealt with saving the previous warehouse, so continue with loading.
-        self.changesMade = False
+                # The user did not cancel so and we have dealt with saving the previous warehouse, so continue with loading.
+                self.changesMade = False
 
         # Prompt the user to enter the new warehouse's name
         os.system("python WWdimensionEntry.py")
-        with open('temp.bin', 'rb') as f:
-            warehouseSpecs = load(f)
-            warehouseName = warehouseSpecs[0]
-            dimensions = [int(warehouseSpecs[1]), int(warehouseSpecs[2])]
-            self.warehouse = Warehouse(filename=warehouseName, dimensions=dimensions)
-            status += "New warehouse with the following name has been created: " + warehouseName
+        if os.stat("temp.bin").st_size > 0:
+            with open('temp.bin', 'rb') as f:
+                warehouseSpecs = load(f)
+                warehouseName = warehouseSpecs[1]
+                dimensions = [int(warehouseSpecs[2]), int(warehouseSpecs[3])]
+                self.warehouse = Warehouse(filename=warehouseName, dimensions=dimensions)
+                status += "New warehouse with the following name has been created: " + warehouseName
+                self.updateStatusWindow(status)
+                self.refreshUI()
+        else:
+            status += "New file has been cancelled."
             self.updateStatusWindow(status)
-            self.refreshUI()
-            f.flush()
-            f.close()
-
-            '''
-            response = QtWidgets.QInputDialog.getText(x, "New Warehouse", "Please enter the name of the new warehouse to be created.")
-            while True:
-                response = QtWidgets.QInputDialog.getText(x, "New Warehouse", "Please enter the name of the new warehouse to be created.")
-                # If the user cancelled, exit function
-                if not response[1]:
-                    self.updateStatusWindow("New file creation has been cancelled.")
-                    return
-                # Otherwise, validate input
-                if response[0] == "":
-                    QtWidgets.QMessageBox.warning(x, "Invalid Input", "Please enter a name for your warehouse.")
-                    continue
-                break
-            # Input has been validated, proceed with the function
-            # Create a fresh, empty warehouse
-            self.warehouse = Warehouse(response[1])
-            self.refreshUI()
-
-            # get dimensions too. maybe launch the menu from the start up thingy.
-            '''
 
     '''-----------------------------------------------------------------------------------------------------------------
     This will load first prompt the user to save if they are currently working on an unsaved project in the warehouse
@@ -1489,11 +1461,11 @@ class Ui_MainWindow(object):
                 self.updateStatusWindow(status)
                 return
 
-        # The user did not cancel so and we have dealt with saving the previous warehouse, so continue with loading.
-        self.changesMade = False
+            # The user did not cancel so and we have dealt with saving the previous warehouse, so continue with loading.
+            self.changesMade = False
 
         # Get the list of existing warehouse names
-        db = database(self.warehouse.filename)
+        db = database("dummy")
         warehouses = db.get_warehouse_list()
         if warehouses is None:
             status += "There are no existing warehouses to load!"
@@ -1546,12 +1518,6 @@ class Ui_MainWindow(object):
     def helpDisplay(self):
         os.system("python WWHelpMenu.py")
 
-    def loadOnStartup(self):
-        if len(sys.argv) > 1:
-            return True
-        else:
-            return False
-
     '''-----------------------------------------------------------------------------------------------------------------
    This function will return the area left in the warehouse across all spaces by subtracting the area of all items in
    the warehouse from the maximum possible area, given the warehouse dimensions.
@@ -1571,6 +1537,7 @@ class Ui_MainWindow(object):
     and will then display the warehouse contents in the item window.
     -----------------------------------------------------------------------------------------------------------------'''
     def refreshUI(self):
+        MainWindow.setWindowTitle("WarehouseWizard: " + self.warehouse.filename)
         self.a1Clicked()
         self.a2Clicked()
         self.a3Clicked()

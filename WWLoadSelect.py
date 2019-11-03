@@ -50,6 +50,7 @@ class Ui_addItemWindow(object):
 
 
     def retranslateUi(self, addItemWindow):
+        pass
         # _translate = QtCore.QCoreApplication.translate
         # addItemWindow.setWindowTitle(_translate("addItemWindow", "Select File to Load"))
         # self.submitButton.setText(_translate("addItemWindow", "Load"))

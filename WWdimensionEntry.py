@@ -100,6 +100,11 @@ class Ui_MainWindow(object):
 
         self.submitButton.clicked.connect(self.submit)
 
+        self.f = open("temp.bin", 'wb')
+        self.f.seek(0)
+        self.f.truncate()
+        self.f.close()
+
     def submit(self):
         if self.widthEntry.text().isnumeric() is False or self.nameEntry.text() == "" or self.heightEntry.text().isnumeric() is False:
             x = QtWidgets.QMessageBox()
@@ -108,7 +113,7 @@ class Ui_MainWindow(object):
             x = QtWidgets.QMessageBox()
             QtWidgets.QMessageBox.warning(x, "Invalid Input", "Dimensions cannot be zero!")
         else:
-            formData = [self.nameEntry.text(), self.widthEntry.text(), self.heightEntry.text()]
+            formData = [False, self.nameEntry.text(), self.widthEntry.text(), self.heightEntry.text()]
             f = open("temp.bin", 'wb')
             dump(formData, f)
             f.close()
