@@ -1024,8 +1024,12 @@ class Ui_MainWindow(object):
     the storage location in which the item is successfully added to will be output to the item window.
     ---------------------------------------------------------------------------------------------------------------------'''
     def addItemClicked(self):
+        f = open("temp.bin", 'wb')
+        f.seek(0)
+        f.truncate()
+        f.close()
         os.system("python WWitemEntry.py")
-        if os.stat("temp.bin").st_size != 0:
+        if os.stat("temp.bin").st_size > 0:
             with open('temp.bin', 'rb') as f:
                 itemSpecs = load(f)
                 itemName = itemSpecs[0]
@@ -1051,9 +1055,6 @@ class Ui_MainWindow(object):
                     activityFeed = "\'" + str(itemName) + "\' has been stored at location " + getEncoding(storedAt[0]) + str(storedAt[1] + 1) + ".\n"
                     activityFeed += str(int(dimensions[0] * dimensions[1])) + " square units of space have been deducted from " + getEncoding(storedAt[0]) + str(storedAt[1] + 1) + "."
                     self.updateStatusWindow(activityFeed)
-                f.seek(0)
-                f.truncate()
-                f.close()
         else:
             self.updateStatusWindow("Add item has been cancelled.")
 

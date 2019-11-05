@@ -142,10 +142,6 @@ class Ui_addItemWindow(object):
         self.submitButton.setText(_translate("addItemWindow", "Submit"))
         self.noticeLabel.setText(_translate("addItemWindow", "fields with * are required"))
         self.submitButton.clicked.connect(self.submit)
-        self.f = open("temp.bin", 'wb')
-        self.f.seek(0)
-        self.f.truncate()
-        self.f.close()
 
     def submit(self):
         if self.widthEntry.text().isnumeric() is False or self.itemNameEntry.text() == "" or self.heightEntry.text().isnumeric() is False:
