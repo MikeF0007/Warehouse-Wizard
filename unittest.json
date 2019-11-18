@@ -1,0 +1,201 @@
+{
+    "warehouse": [
+        {
+            "filename": "unittest",
+            "height": 1000,
+            "itemCount": 55,
+            "nextUniqueID": 10,
+            "storageCap": 40000.0,
+            "storageLocation": {
+                "A1": {
+                    "category": null,
+                    "items": [
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 0,
+                            "name": "unittest#0"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 1,
+                            "name": "unittest#2"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 2,
+                            "name": "unittest#5"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 3,
+                            "name": "unittest#9"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 4,
+                            "name": "unittest#14"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 5,
+                            "name": "unittest#20"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 6,
+                            "name": "unittest#27"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 7,
+                            "name": "unittest#35"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 8,
+                            "name": "unittest#44"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 9,
+                            "name": "unittest#54"
+                        }
+                    ],
+                    "remainingArea": 36000.0,
+                    "spaceLeft": true
+                },
+                "A2": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "A3": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "A4": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "B1": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "B2": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "B3": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "B4": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "C1": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "C2": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "C3": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "C4": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "D1": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "D2": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "D3": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "D4": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                }
+            },
+            "width": 1000
+        }
+    ]
+}

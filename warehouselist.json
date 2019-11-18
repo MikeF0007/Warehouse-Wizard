@@ -1,7 +1,6 @@
 {
     "warehouseList": [
-        "test",
-        "New Warehouse",
-        "Cool Story"
+        "unittest",
+        "unittest2"
     ]
 }
