@@ -1,0 +1,110 @@
+{
+    "warehouse": [
+        {
+            "filename": "unittest3",
+            "height": 1000,
+            "itemCount": 0,
+            "nextUniqueID": 0,
+            "storageCap": 40000.0,
+            "storageLocation": {
+                "A1": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "A2": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "A3": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "A4": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "B1": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "B2": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "B3": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "B4": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "C1": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "C2": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "C3": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "C4": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "D1": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "D2": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "D3": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                },
+                "D4": {
+                    "category": null,
+                    "items": [],
+                    "remainingArea": 40000.0,
+                    "spaceLeft": true
+                }
+            },
+            "width": 1000
+        }
+    ]
+}

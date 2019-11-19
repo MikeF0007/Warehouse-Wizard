@@ -3,8 +3,8 @@
         {
             "filename": "unittest",
             "height": 1000,
-            "itemCount": 55,
-            "nextUniqueID": 10,
+            "itemCount": 66,
+            "nextUniqueID": 11,
             "storageCap": 40000.0,
             "storageLocation": {
                 "A1": {
@@ -99,9 +99,18 @@
                             ],
                             "itemID": 9,
                             "name": "unittest#54"
+                        },
+                        {
+                            "description": "",
+                            "dimensions": [
+                                20,
+                                20
+                            ],
+                            "itemID": 10,
+                            "name": "unittest#65"
                         }
                     ],
-                    "remainingArea": 36000.0,
+                    "remainingArea": 35600.0,
                     "spaceLeft": true
                 },
                 "A2": {
