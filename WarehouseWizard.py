@@ -453,7 +453,7 @@ class Ui_MainWindow(object):
             output += str(item.itemID) + " : "
             output += str(item.name) + " : "
             output += str(item.dimensions[0] * item.dimensions[1]) + " square units\n"
-            output += str(item.description) + "\n"
+            output += str(item.description) + "\n\n"
         return output
 
     def a1Clicked(self):
@@ -1615,7 +1615,7 @@ def getCoordEncoding(strLocation):
         row = 0
     elif strLocation[0].upper() == 'B':
         row = 1
-    elif strLocation[0].upper() == 'B':
+    elif strLocation[0].upper() == 'C':
         row = 2
     else:
         row = 3

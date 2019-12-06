@@ -68,6 +68,7 @@ class database:
         duplicate = False
 
         if len(self.warehouseList["warehouseList"]) == 0:
+            print("I DID THIS")
             self.warehouseList["warehouseList"].append(warehouse.filename)
         else:
             for i in self.warehouseList["warehouseList"]:
@@ -106,11 +107,11 @@ class database:
         return list
 
 
-# db = database("Test")
-# newWarehouseObj = Warehouse("unittest")
+db = database("Test")
+# newWarehouseObj = db.load()
+# newWarehouseObj.filename = "Test"
 # newWarehouseObj.addItem((20,20),"TestNew")
 # newWarehouseObj.addItem((20,20),"TestNew2")
-# db.save(newWarehouseObj)
 
 
 # checklist = db.get_warehouse_list()

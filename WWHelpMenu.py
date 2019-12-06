@@ -67,21 +67,32 @@ class Ui_HelpWindow(object):
 
     def infoWarehouseLayout_pushButtonCLICKED(self):
         text = "Warehouse Wizard takes the warehouse dimensions specified by the user and divides it into 16 equal sized storage spaces, automatically deducting space for aisles and walkways.\n\n"\
-               "Valid storage space is represented by a square, has a color indicating the level of remaining space. Green = 100-66%; Yellow = 65-33%; Red = 32-0%\n\n"\
+               "Valid storage space is represented by a square, and has a color indicating the level of remaining space. Green = 100-66%; Yellow = 65-33%; Red = 32-0%\n\n"\
                 "The user can click on each storage space to see the contents displayed on the right in the item viewer.\n\n"\
-                "The label on each storage space refers to its position, and each storage space can have a category assigned to it."
+                "The label on each storage space refers to its position, and each storage cell may also have a category assigned to it (this will appear under its position label)."
         self.displayHelp_label.setText(text)
 
     def infoActivityFeed_pushButtonCLICKED(self):
-        text = "Description about ACTIVITY FEED goes here"
+        text = "The activity feed, located at the bottom of the application, displays information regarding the state of the warehouse, and the results of actions taken by the user.\n\n" \
+               "It indicates details of success and failure of functions, and changes that were made to the warehouse\n\n" \
+               "Users can verify that they have successfully loaded the correct file or saved their current warehouse."
         self.displayHelp_label.setText(text)
 
     def infoItemList_pushButtonCLICKED(self):
-        text = "Description about ITEM LIST goes here"
+        text = "The Item List window, located on the right hand side of the application, displays details about items that are currently stored in the warehouse. This information includes item ID, name, description, and size.\n\n" \
+               "The contents of an individual storage space will be displayed when the user clicks on a storage cell in the Warehouse Layout. The remaining area of the selected storage space will also be listed.\n\n" \
+               "The results (items) matching an item search will be displayed in the Item List window.\n\n" \
+               "The contents of the entire warehouse can be displayed by clicking the home button. This will also display the remaining area in the entire warehouse."
         self.displayHelp_label.setText(text)
 
     def infoActions_pushButtonCLICKED(self):
-        text = "Description about CATEGORY goes here"
+        text = "Add Item: This button allows the user to add an item to the warehouse. By default, it inserts the item in the first available location with sufficient space. If the user specifies a\n" \
+               "category, it inserts the item in the first available position with sufficient space that matches the category name. \n" \
+               "Remove Item: This button allows the user to remove an item by specifying that item's item ID. The item id can be found in the item list window. \n" \
+               "Item Search: This button allows the user to search by item ID, item name, or item category. Follow respective prompts; results will appear in item list window.\n" \
+               "found in a search in the item list window. \n" \
+               "Manage Category: This button allows users to add or remove a category from a storage cell. Adding a category will affect the behavior of Add Item. \n" \
+                "Home: This button, located above the item list window, updates the contents of the item list window to represent the contents of the entire warehouse."
         self.displayHelp_label.setText(text)
 
 
