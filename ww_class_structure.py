@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class Item:
 	def __init__(self, itemID, dimensions, name, description, storedAt):
 		self.itemID = itemID  # unique integer ID assigned by the ID accumulator in the warehouse class
